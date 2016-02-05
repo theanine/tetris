@@ -176,6 +176,34 @@ bool anchor_check(board_t* b, piece_t piece, int row, int col)
 	return false;
 }
 
+void board_shift(board_t* b, int start_row)
+{
+	for (int row = start_row; row >= 0; row--) {
+		for (int col = 0; col < b->width; col++) {
+			int val = (row < 1) ? 0 : board_get(b, row - 1, col);
+			board_set(b, row, col, val);
+		}
+	}
+}
+
+void board_linecheck(board_t* b)
+{
+	for (int row = 0; row < b->height; row++) {
+		
+		bool row_cleared = true;
+		
+		for (int col = 0; col < b->width; col++)
+			if (board_get(b, row, col) == 0)
+				row_cleared = false;
+		
+		if (row_cleared) {
+			for (int col = 0; col < b->width; col++)
+				board_set(b, row, col, 0);
+			board_shift(b, row);
+		}
+	}
+}
+
 void board_init(board_t* b, int width, int height)
 {
 	b->width = width;

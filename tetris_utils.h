@@ -53,6 +53,7 @@ void input_handle(board_t* b, keycode_t input, piece_t* piece, int* row, int* co
 keycode_t get_input(void);
 bool collision_check(board_t* b, piece_t piece, int row, int col);
 bool anchor_check(board_t* b, piece_t piece, int row, int col);
+void board_linecheck(board_t* b);
 void board_init(board_t* b, int width, int height);
 void board_destroy(board_t* b);
 void board_set(board_t* b, int row, int col, int val);

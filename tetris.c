@@ -39,6 +39,7 @@ int main(void)
 		}
 		
 		piece_show(&board, piece, row, col);
+		board_linecheck(&board);
 	}
 	
 	board_destroy(&board);
