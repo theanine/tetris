@@ -1,0 +1,22 @@
+- draw board
+- 1 piece
+- move left/right/down
+- anchoring (including pieces + bottom)
+- collisions (side wall + pieces)
+- rotate left/right
+- line completion check
+- game over screen
+- drop timer
+
+- drop piece key
+- score
+- pieces (7)
+- colored pieces
+- difficulty increases
+
+- preview next piece
+- leaderboard (including name query)
+- leaderboard persistence
+- hold piece
+- title screen w/options
+- demo/ai mode
