@@ -20,6 +20,24 @@ piece_t piece_gen(void)
 	return piece_list[PIECE_STRAIGHT];
 }
 
+void piece_visibility(board_t* board, piece_t piece, int row, int col, bool shown)
+{
+	for (int y = 0; y < MAX_PIECE_HEIGHT; y++)
+		for (int x = 0; x < MAX_PIECE_WIDTH; x++)
+			if (piece.cells[y][x])
+				board_set(board, y + row, x + col, shown);
+}
+
+void piece_show(board_t* board, piece_t piece, int row, int col)
+{
+	piece_visibility(board, piece, row, col, true);
+}
+
+void piece_hide(board_t* board, piece_t piece, int row, int col)
+{
+	piece_visibility(board, piece, row, col, false);
+}
+
 void console_init(console_t* c)
 {
 	struct termios t;
@@ -37,6 +55,28 @@ void console_destroy(console_t* c)
 void console_clear(void)
 {
 	write(STDOUT_FILENO, " \033[1;1H\033[2J", 12);
+}
+
+void input_handle(keycode_t input, int* row, int* col)
+{
+	switch (input) {
+		case KEY_LEFT:
+			(*col)--;
+			break;
+		case KEY_RIGHT:
+			(*col)++;
+			break;
+		case KEY_UP:
+			// do nothing
+			break;
+		case KEY_DOWN:
+			(*row)++;
+			break;
+		default:
+			// do nothing
+			// printf("UNKNOWN\n");
+			break;
+	}
 }
 
 keycode_t get_input(void)
@@ -84,6 +124,7 @@ int board_get(board_t* b, int row, int col)
 
 void board_print(board_t* b)
 {
+	console_clear();
 	for (int col = 0; col < b->width+2; col++)
 		printf("-");
 

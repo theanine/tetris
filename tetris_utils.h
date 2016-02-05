@@ -44,9 +44,12 @@ typedef enum keycode {
 
 void piece_init(void);
 piece_t piece_gen(void);
+void piece_show(board_t* board, piece_t piece, int row, int col);
+void piece_hide(board_t* board, piece_t piece, int row, int col);
 void console_init(console_t* c);
 void console_destroy(console_t* c);
 void console_clear(void);
+void input_handle(keycode_t input, int* row, int* col);
 keycode_t get_input(void);
 void board_init(board_t* b, int width, int height);
 void board_destroy(board_t* b);

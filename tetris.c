@@ -25,39 +25,14 @@ int main(void)
 		int col_pos = STARTING_COL_POS;
 		
 		while (1) {
-			for (int row = 0; row < MAX_PIECE_HEIGHT; row++)
-				for (int col = 0; col < MAX_PIECE_WIDTH; col++)
-					if (piece.cells[row][col])
-						board_set(&board, row_pos + row, col_pos + col, 1);
-			
+			piece_show(&board, piece, row_pos, col_pos);
 			board_print(&board);
 			
 			keycode_t input = get_input();
 			
-			for (int row = 0; row < MAX_PIECE_HEIGHT; row++)
-				for (int col = 0; col < MAX_PIECE_WIDTH; col++)
-					if (piece.cells[row][col])
-						board_set(&board, row_pos + row, col_pos + col, 0);
+			piece_hide(&board, piece, row_pos, col_pos);
 			
-			console_clear();
-			switch (input) {
-				case KEY_LEFT:
-					col_pos--;
-					break;
-				case KEY_RIGHT:
-					col_pos++;
-					break;
-				case KEY_UP:
-					// do nothing
-					break;
-				case KEY_DOWN:
-					row_pos++;
-					break;
-				default:
-					// do nothing
-					// printf("UNKNOWN\n");
-					break;
-			}
+			input_handle(input, &row_pos, &col_pos);
 		}
 	}
 	
