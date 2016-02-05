@@ -151,6 +151,12 @@ bool collision_check_bottom(board_t* b, int row, int col)
 	return (val || val == ERR_OFF_BOTTOM);
 }
 
+bool collision_check_top(board_t* b, int row, int col)
+{
+	int val = board_get(b, row, col);
+	return (val == ERR_OFF_TOP);
+}
+
 bool collision_check(board_t* b, piece_t piece, int row, int col)
 {
 	TRACE("%s(%d, %d)\n", __func__, row, col);
@@ -173,6 +179,16 @@ bool anchor_check(board_t* b, piece_t piece, int row, int col)
 				if (collision_check_bottom(b, y + row + 1, x + col))
 					return true;
 	
+	return false;
+}
+
+bool board_gameover(board_t* b, piece_t piece, int row, int col)
+{
+	for (int y = 0; y < MAX_PIECE_HEIGHT; y++)
+		for (int x = 0; x < MAX_PIECE_WIDTH; x++)
+			if (piece.cells[y][x])
+				if (collision_check_top(b, y + row, x + col))
+					return true;
 	return false;
 }
 

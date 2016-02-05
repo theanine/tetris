@@ -18,7 +18,8 @@ int main(void)
 	
 	piece_init();
 	
-	while (1) {
+	bool gameover = false;
+	while (!gameover) {
 		piece_t piece = piece_gen();
 		
 		int row = STARTING_ROW_POS;
@@ -40,8 +41,10 @@ int main(void)
 		
 		piece_show(&board, piece, row, col);
 		board_linecheck(&board);
+		gameover = board_gameover(&board, piece, row, col);
 	}
 	
+	printf("\n***** GAME OVER!! *****\n");
 	board_destroy(&board);
 	console_destroy(&console);
 	return 0;

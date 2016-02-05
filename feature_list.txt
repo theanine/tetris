@@ -6,7 +6,7 @@ X anchoring (pieces)
 X collisions (side wall + pieces)
 X rotate left/right
 X line completion check
-- game over screen
+X game over screen
 - drop timer
 
 - drop piece key
