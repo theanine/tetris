@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <termios.h>
 #include <unistd.h>
+#include <assert.h>
 #include "tetris_utils.h"
 
 #define TOTAL_PIECES    1
@@ -26,10 +27,10 @@ piece_t piece_list[TOTAL_PIECES] = {0};
 
 void piece_init(void)
 {
-	piece_list[PIECE_STRAIGHT].cells[3][0] = 1;
-	piece_list[PIECE_STRAIGHT].cells[3][1] = 1;
-	piece_list[PIECE_STRAIGHT].cells[3][2] = 1;
-	piece_list[PIECE_STRAIGHT].cells[3][3] = 1;
+	piece_list[PIECE_STRAIGHT].cells[2][0] = 1;
+	piece_list[PIECE_STRAIGHT].cells[2][1] = 1;
+	piece_list[PIECE_STRAIGHT].cells[2][2] = 1;
+	piece_list[PIECE_STRAIGHT].cells[2][3] = 1;
 }
 
 piece_t piece_gen(void)
@@ -74,10 +75,34 @@ void console_clear(void)
 	write(STDOUT_FILENO, " \033[1;1H\033[2J", 12);
 }
 
-void input_handle(board_t* b, keycode_t input, piece_t piece, int* row, int* col)
+void rotate_piece(piece_t* piece)
 {
-	int new_row = *row;
-	int new_col = *col;
+	assert(MAX_PIECE_WIDTH == MAX_PIECE_HEIGHT);
+	
+	int start_idx = 0;
+	int last_idx  = MAX_PIECE_WIDTH - 1;
+	
+	for (int i=start_idx; i<last_idx; i++) {
+		bool tmp = piece->cells[i][last_idx];
+		piece->cells[i][last_idx] = piece->cells[start_idx][i]; 
+		piece->cells[start_idx][i] = piece->cells[last_idx-i][start_idx];
+		piece->cells[last_idx-i][start_idx] = piece->cells[last_idx][last_idx-i]; 
+		piece->cells[last_idx][last_idx-i] = tmp;
+	}
+	
+	bool tmp = piece->cells[1][1];
+	piece->cells[1][1] = piece->cells[2][1];
+	piece->cells[2][1] = piece->cells[2][2];
+	piece->cells[2][2] = piece->cells[1][2];
+	piece->cells[1][2] = tmp;
+	
+}
+
+void input_handle(board_t* b, keycode_t input, piece_t* piece, int* row, int* col)
+{
+	int new_row       = *row;
+	int new_col       = *col;
+	piece_t new_piece = *piece;
 	
 	switch (input) {
 		case KEY_LEFT:
@@ -87,7 +112,7 @@ void input_handle(board_t* b, keycode_t input, piece_t piece, int* row, int* col
 			new_col++;
 			break;
 		case KEY_UP:
-			// do nothing
+			rotate_piece(&new_piece);
 			break;
 		case KEY_DOWN:
 			new_row++;
@@ -98,11 +123,12 @@ void input_handle(board_t* b, keycode_t input, piece_t piece, int* row, int* col
 			break;
 	}
 	
-	if (collision_check(b, piece, new_row, new_col))
+	if (collision_check(b, new_piece, new_row, new_col))
 		return;
 	
-	*row = new_row;
-	*col = new_col;
+	*row   = new_row;
+	*col   = new_col;
+	*piece = new_piece;
 }
 
 keycode_t get_input(void)

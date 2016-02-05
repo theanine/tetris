@@ -33,7 +33,7 @@ int main(void)
 			
 			piece_hide(&board, piece, row, col);
 			
-			input_handle(&board, input, piece, &row, &col);
+			input_handle(&board, input, &piece, &row, &col);
 			
 			anchored = anchor_check(&board, piece, row, col);
 		}

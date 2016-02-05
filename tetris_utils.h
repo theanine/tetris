@@ -49,7 +49,7 @@ void piece_hide(board_t* board, piece_t piece, int row, int col);
 void console_init(console_t* c);
 void console_destroy(console_t* c);
 void console_clear(void);
-void input_handle(board_t* b, keycode_t input, piece_t piece, int* row, int* col);
+void input_handle(board_t* b, keycode_t input, piece_t* piece, int* row, int* col);
 keycode_t get_input(void);
 bool collision_check(board_t* b, piece_t piece, int row, int col);
 bool anchor_check(board_t* b, piece_t piece, int row, int col);
