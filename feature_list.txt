@@ -3,7 +3,7 @@ X 1 piece
 X move left/right/down
 X anchoring (bottom)
 X anchoring (pieces)
-- collisions (side wall + pieces)
+X collisions (side wall + pieces)
 - rotate left/right
 - line completion check
 - game over screen
