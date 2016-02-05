@@ -17,14 +17,15 @@ typedef struct board {
 
 typedef enum keycode {
 	KEY_UNKNOWN = -1,
-	KEY_UP = 65,
-	KEY_DOWN = 66,
-	KEY_RIGHT = 67,
-	KEY_LEFT = 68
+	KEY_UP      = 65,
+	KEY_DOWN    = 66,
+	KEY_RIGHT   = 67,
+	KEY_LEFT    = 68
 } keycode_t;
 
 void console_init(console_t* c);
 void console_destroy(console_t* c);
+void console_clear(void);
 keycode_t get_input(void);
 void board_init(board_t* b, int width, int height);
 void board_destroy(board_t* b);

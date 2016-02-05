@@ -18,6 +18,11 @@ void console_destroy(console_t* c)
 	tcsetattr(STDIN_FILENO, TCSANOW, &c->old_t);
 }
 
+void console_clear(void)
+{
+	write(STDOUT_FILENO, " \033[1;1H\033[2J", 12);
+}
+
 keycode_t get_input(void)
 {
 	// 27 and 29 are the first two characters of an arrow key input

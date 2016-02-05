@@ -23,6 +23,7 @@ int main(void)
 		board_print(&board);
 		
 		keycode_t input = get_input();
+		console_clear();
 		switch (input) {
 			case KEY_LEFT:
 				printf("LEFT\n");
