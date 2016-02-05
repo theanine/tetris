@@ -4,8 +4,21 @@
 #include <unistd.h>
 #include "tetris_utils.h"
 
-#define TOTAL_PIECES   1
+#define TOTAL_PIECES    1
+
+#define SUCCESS         0
+#define ERR_GENERIC    -1
+#define ERR_PARAMS     -2
+
 piece_t piece_list[TOTAL_PIECES] = {0};
+
+#define DEBUG 0
+
+#if DEBUG
+#define TRACE(...)  do { printf(__VA_ARGS__); } while (0)
+#else
+#define TRACE(...)  do { } while (0)
+#endif
 
 void piece_init(void)
 {
@@ -95,7 +108,22 @@ keycode_t get_input(void)
 
 bool anchor_check(board_t* b, piece_t piece, int row, int col)
 {
-	return (row + MAX_PIECE_HEIGHT == b->height);
+	TRACE("%s(%d, %d)\n", __func__, row, col);
+	
+	// check anchoring with other pieces
+	for (int y = MAX_PIECE_HEIGHT-1; y > 0; y--) {
+		for (int x = 0; x < MAX_PIECE_WIDTH; x++) {
+			if (piece.cells[y][x]) {
+				int val = board_get(b, y + row + 1, x + col);
+				if (val == ERR_PARAMS || val == true) {
+					TRACE("found a collision at (%d, %d)\n", y + row + 1, x + col);
+					return true;
+				}
+			}
+		}
+	}
+	
+	return false;
 }
 
 void board_init(board_t* b, int width, int height)
@@ -116,7 +144,7 @@ void board_destroy(board_t* b)
 
 void board_set(board_t* b, int row, int col, int val)
 {
-	printf("Setting board to %d at [%d][%d]\n", val, row, col);
+	TRACE("%s(%p, %d, %d, %d)\n", __func__, (void*)b, row, col, val);
 	if (row >= 0 && row < b->height)
 		if (col >= 0 && col < b->width)
 			b->cells[row][col] = val;
@@ -124,6 +152,11 @@ void board_set(board_t* b, int row, int col, int val)
 
 int board_get(board_t* b, int row, int col)
 {
+	TRACE("%s(%p, %d, %d)\n", __func__, (void*)b, row, col);
+	if (row < 0 || row >= b->height)
+		return ERR_PARAMS;
+	if (col < 0 || col >= b->width)
+		return ERR_PARAMS;
 	return b->cells[row][col];
 }
 
