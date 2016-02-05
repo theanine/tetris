@@ -1,7 +1,8 @@
 X draw board
 X 1 piece
 X move left/right/down
-- anchoring (including pieces + bottom)
+X anchoring (bottom)
+X anchoring (pieces)
 - collisions (side wall + pieces)
 - rotate left/right
 - line completion check

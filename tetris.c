@@ -21,19 +21,24 @@ int main(void)
 	while (1) {
 		piece_t piece = piece_gen();
 		
-		int row_pos = STARTING_ROW_POS;
-		int col_pos = STARTING_COL_POS;
+		int row = STARTING_ROW_POS;
+		int col = STARTING_COL_POS;
 		
-		while (1) {
-			piece_show(&board, piece, row_pos, col_pos);
+		bool anchored = false;
+		while (!anchored) {
+			piece_show(&board, piece, row, col);
 			board_print(&board);
 			
 			keycode_t input = get_input();
 			
-			piece_hide(&board, piece, row_pos, col_pos);
+			piece_hide(&board, piece, row, col);
 			
-			input_handle(input, &row_pos, &col_pos);
+			input_handle(input, &row, &col);
+			
+			anchored = anchor_check(&board, piece, row, col);
 		}
+		
+		piece_show(&board, piece, row, col);
 	}
 	
 	board_destroy(&board);

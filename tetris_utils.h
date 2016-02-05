@@ -51,6 +51,7 @@ void console_destroy(console_t* c);
 void console_clear(void);
 void input_handle(keycode_t input, int* row, int* col);
 keycode_t get_input(void);
+bool anchor_check(board_t* b, piece_t piece, int row, int col);
 void board_init(board_t* b, int width, int height);
 void board_destroy(board_t* b);
 void board_set(board_t* b, int row, int col, int val);

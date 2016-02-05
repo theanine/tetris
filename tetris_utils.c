@@ -93,6 +93,11 @@ keycode_t get_input(void)
 	return (keycode_t)getchar();
 }
 
+bool anchor_check(board_t* b, piece_t piece, int row, int col)
+{
+	return (row + MAX_PIECE_HEIGHT == b->height);
+}
+
 void board_init(board_t* b, int width, int height)
 {
 	b->width = width;
