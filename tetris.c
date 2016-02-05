@@ -13,6 +13,8 @@ int main(void)
 	board_t board;
 	board_init(&board, BOARD_WIDTH, BOARD_HEIGHT);
 	
+	piece_init();
+	
 	// // This example code draws a horizontal bar 4 squares long.
 	// board_set(&board, 2, 3, 1);
 	// board_set(&board, 2, 4, 1);
@@ -21,6 +23,15 @@ int main(void)
 	
 	while (1) {
 		board_print(&board);
+		
+		piece_t piece = piece_gen();
+		
+		int row_pos = 0;
+		int col_pos = 0;
+		for (int row = 0; row < MAX_PIECE_HEIGHT; row++)
+			for (int col = 0; col < MAX_PIECE_WIDTH; col++)
+				if (piece.cells[row][col])
+					board_set(&board, row_pos + row, col_pos + col, 1);
 		
 		keycode_t input = get_input();
 		console_clear();

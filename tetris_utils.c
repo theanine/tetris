@@ -4,6 +4,22 @@
 #include <unistd.h>
 #include "tetris_utils.h"
 
+#define TOTAL_PIECES   1
+piece_t piece_list[TOTAL_PIECES] = {0};
+
+void piece_init(void)
+{
+	piece_list[PIECE_STRAIGHT].cells[3][0] = 1;
+	piece_list[PIECE_STRAIGHT].cells[3][1] = 1;
+	piece_list[PIECE_STRAIGHT].cells[3][2] = 1;
+	piece_list[PIECE_STRAIGHT].cells[3][3] = 1;
+}
+
+piece_t piece_gen(void)
+{
+	return piece_list[PIECE_STRAIGHT];
+}
+
 void console_init(console_t* c)
 {
 	struct termios t;
@@ -55,6 +71,7 @@ void board_destroy(board_t* b)
 
 void board_set(board_t* b, int row, int col, int val)
 {
+	printf("Setting board to %d at [%d][%d]\n", val, row, col);
 	b->cells[row][col] = val;
 }
 

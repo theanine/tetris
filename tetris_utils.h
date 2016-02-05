@@ -2,6 +2,10 @@
 #define TETRIS_UTILS
 
 #include <termios.h>
+#include <stdbool.h>
+
+#define MAX_PIECE_HEIGHT  4
+#define MAX_PIECE_WIDTH   4
 
 // struct console handles putting the terminal in raw mode for input
 typedef struct console {
@@ -15,6 +19,21 @@ typedef struct board {
 	int** cells;
 } board_t;
 
+// piece_t represents the pieces
+typedef struct piece {
+	bool cells[MAX_PIECE_HEIGHT][MAX_PIECE_WIDTH];
+} piece_t;
+
+typedef enum piece_name {
+	PIECE_STRAIGHT,
+	PIECE_SQUARE,
+	PIECE_T,
+	PIECE_L,
+	PIECE_L_REVERSE,
+	PIECE_S,
+	PIECE_S_REVERSE,
+} piece_name_t;
+	
 typedef enum keycode {
 	KEY_UNKNOWN = -1,
 	KEY_UP      = 65,
@@ -23,6 +42,8 @@ typedef enum keycode {
 	KEY_LEFT    = 68
 } keycode_t;
 
+void piece_init(void);
+piece_t piece_gen(void);
 void console_init(console_t* c);
 void console_destroy(console_t* c);
 void console_clear(void);
