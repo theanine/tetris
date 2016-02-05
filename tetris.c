@@ -19,8 +19,6 @@ int main(void)
 	piece_init();
 	
 	while (1) {
-		board_print(&board);
-		
 		piece_t piece = piece_gen();
 		
 		int row_pos = STARTING_ROW_POS;
@@ -32,23 +30,32 @@ int main(void)
 					if (piece.cells[row][col])
 						board_set(&board, row_pos + row, col_pos + col, 1);
 			
+			board_print(&board);
+			
 			keycode_t input = get_input();
+			
+			for (int row = 0; row < MAX_PIECE_HEIGHT; row++)
+				for (int col = 0; col < MAX_PIECE_WIDTH; col++)
+					if (piece.cells[row][col])
+						board_set(&board, row_pos + row, col_pos + col, 0);
+			
 			console_clear();
 			switch (input) {
 				case KEY_LEFT:
-					printf("LEFT\n");
+					col_pos--;
 					break;
 				case KEY_RIGHT:
-					printf("RIGHT\n");
+					col_pos++;
 					break;
 				case KEY_UP:
-					printf("UP\n");
+					// do nothing
 					break;
 				case KEY_DOWN:
-					printf("DOWN\n");
+					row_pos++;
 					break;
 				default:
-					printf("UNKNOWN\n");
+					// do nothing
+					// printf("UNKNOWN\n");
 					break;
 			}
 		}
