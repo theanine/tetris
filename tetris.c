@@ -26,8 +26,8 @@ int main(void)
 		
 		piece_t piece = piece_gen();
 		
-		int row_pos = 0;
-		int col_pos = 0;
+		int row_pos = -MAX_PIECE_HEIGHT + 1;
+		int col_pos = (BOARD_WIDTH - MAX_PIECE_WIDTH) / 2;
 		for (int row = 0; row < MAX_PIECE_HEIGHT; row++)
 			for (int col = 0; col < MAX_PIECE_WIDTH; col++)
 				if (piece.cells[row][col])

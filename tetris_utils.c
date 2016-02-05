@@ -72,7 +72,9 @@ void board_destroy(board_t* b)
 void board_set(board_t* b, int row, int col, int val)
 {
 	printf("Setting board to %d at [%d][%d]\n", val, row, col);
-	b->cells[row][col] = val;
+	if (row >= 0 && row < b->height)
+		if (col >= 0 && col < b->width)
+			b->cells[row][col] = val;
 }
 
 int board_get(board_t* b, int row, int col)
