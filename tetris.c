@@ -59,7 +59,7 @@ int main(void)
 				time_passed -= droptime;
 			}
 			
-			anchored = anchor_check(&board, piece, row, col);
+			anchored = piece_anchor_check(&board, piece, row, col);
 			
 			int wait = droptime / INPUT_CHECK_FREQ;
 			time_passed += wait;

@@ -94,26 +94,7 @@ void piece_hide(board_t* board, piece_t piece, int row, int col)
 	piece_visibility(board, piece, row, col, false);
 }
 
-void console_init(console_t* c)
-{
-	struct termios t;
-	tcgetattr(STDIN_FILENO, &t);
-	c->old_t = t;
-	t.c_lflag &= (~ICANON & ~ECHO);
-	tcsetattr(STDIN_FILENO, TCSANOW, &t);
-}
-
-void console_destroy(console_t* c)
-{
-	tcsetattr(STDIN_FILENO, TCSANOW, &c->old_t);
-}
-
-void console_clear(void)
-{
-	write(STDOUT_FILENO, " \033[1;1H\033[2J", 12);
-}
-
-void rotate_piece(piece_t* piece)
+void piece_rotate(piece_t* piece)
 {
 	assert(MAX_PIECE_WIDTH == MAX_PIECE_HEIGHT);
 	
@@ -136,6 +117,73 @@ void rotate_piece(piece_t* piece)
 	
 }
 
+bool piece_collision_check_bottom(board_t* b, int row, int col)
+{
+	int val = board_get(b, row, col);
+	TRACE("%s: %d\n", __func__, val);
+	return (val == 1 || val == ERR_OFF_BOTTOM);
+}
+
+bool piece_collision_check_top(board_t* b, int row, int col)
+{
+	int val = board_get(b, row, col);
+	return (val == ERR_OFF_TOP);
+}
+
+bool piece_collision_check(board_t* b, piece_t piece, int row, int col)
+{
+	TRACE("%s(%d, %d)\n", __func__, row, col);
+	
+	for (int y = 0; y < MAX_PIECE_HEIGHT; y++) {
+		for (int x = 0; x < MAX_PIECE_WIDTH; x++) {
+			if (piece.cells[y][x]) {
+				int val = board_get(b, row + y, col + x);
+				if (val != 0 && val != ERR_OFF_TOP)
+					return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool piece_anchor_check(board_t* b, piece_t piece, int row, int col)
+{
+	TRACE("%s(%d, %d)\n", __func__, row, col);
+	
+	for (int y = MAX_PIECE_HEIGHT-1; y > 0; y--) {
+		for (int x = 0; x < MAX_PIECE_WIDTH; x++) {
+			if (piece.cells[y][x]) {
+				if (piece_collision_check_bottom(b, y + row + 1, x + col)) {
+					TRACE("Detected a collision at [%d,%d] with [%d,%d]\n", y + row + 1, x + col, y, x);
+					return true;
+				}
+			}
+		}
+	}
+	
+	TRACE("No collisions.\n");
+	return false;
+}
+
+void console_init(console_t* c)
+{
+	struct termios t;
+	tcgetattr(STDIN_FILENO, &t);
+	c->old_t = t;
+	t.c_lflag &= (~ICANON & ~ECHO);
+	tcsetattr(STDIN_FILENO, TCSANOW, &t);
+}
+
+void console_destroy(console_t* c)
+{
+	tcsetattr(STDIN_FILENO, TCSANOW, &c->old_t);
+}
+
+void console_clear(void)
+{
+	write(STDOUT_FILENO, " \033[1;1H\033[2J", 12);
+}
+
 void input_handle(board_t* b, keycode_t input, piece_t* piece, int* row, int* col)
 {
 	int new_row       = *row;
@@ -150,13 +198,13 @@ void input_handle(board_t* b, keycode_t input, piece_t* piece, int* row, int* co
 			new_col++;
 			break;
 		case KEY_UP:
-			rotate_piece(&new_piece);
+			piece_rotate(&new_piece);
 			break;
 		case KEY_DOWN:
 			new_row++;
 			break;
 		case KEY_SPACE:
-			while (!collision_check(b, new_piece, new_row, new_col))
+			while (!piece_collision_check(b, new_piece, new_row, new_col))
 				new_row++;
 			new_row--;
 			break;
@@ -166,7 +214,7 @@ void input_handle(board_t* b, keycode_t input, piece_t* piece, int* row, int* co
 			return;
 	}
 	
-	if (collision_check(b, new_piece, new_row, new_col))
+	if (piece_collision_check(b, new_piece, new_row, new_col))
 		return;
 	
 	*row   = new_row;
@@ -189,7 +237,7 @@ void input_queue(keycode_t key)
 	input_produce_count++;
 }
 
-keycode_t get_input(void)
+keycode_t input_get(void)
 {
 	// 27 and 29 are the first two characters of an arrow key input
 	int c = getchar();
@@ -221,7 +269,7 @@ keycode_t input_pop(void)
 void* input_handler(void* unused)
 {
 	while (1) {
-		keycode_t input = get_input();
+		keycode_t input = input_get();
 		input_queue(input);
 	}
 	pthread_exit(0);
@@ -236,60 +284,12 @@ int input_init(void)
 	return SUCCESS;
 }
 
-bool collision_check_bottom(board_t* b, int row, int col)
-{
-	int val = board_get(b, row, col);
-	TRACE("%s: %d\n", __func__, val);
-	return (val == 1 || val == ERR_OFF_BOTTOM);
-}
-
-bool collision_check_top(board_t* b, int row, int col)
-{
-	int val = board_get(b, row, col);
-	return (val == ERR_OFF_TOP);
-}
-
-bool collision_check(board_t* b, piece_t piece, int row, int col)
-{
-	TRACE("%s(%d, %d)\n", __func__, row, col);
-	
-	for (int y = 0; y < MAX_PIECE_HEIGHT; y++) {
-		for (int x = 0; x < MAX_PIECE_WIDTH; x++) {
-			if (piece.cells[y][x]) {
-				int val = board_get(b, row + y, col + x);
-				if (val != 0 && val != ERR_OFF_TOP)
-					return true;
-			}
-		}
-	}
-	return false;
-}
-
-bool anchor_check(board_t* b, piece_t piece, int row, int col)
-{
-	TRACE("%s(%d, %d)\n", __func__, row, col);
-	
-	for (int y = MAX_PIECE_HEIGHT-1; y > 0; y--) {
-		for (int x = 0; x < MAX_PIECE_WIDTH; x++) {
-			if (piece.cells[y][x]) {
-				if (collision_check_bottom(b, y + row + 1, x + col)) {
-					TRACE("Detected a collision at [%d,%d] with [%d,%d]\n", y + row + 1, x + col, y, x);
-					return true;
-				}
-			}
-		}
-	}
-	
-	TRACE("No collisions.\n");
-	return false;
-}
-
 bool board_gameover(board_t* b, piece_t piece, int row, int col)
 {
 	for (int y = 0; y < MAX_PIECE_HEIGHT; y++)
 		for (int x = 0; x < MAX_PIECE_WIDTH; x++)
 			if (piece.cells[y][x])
-				if (collision_check_top(b, y + row, x + col))
+				if (piece_collision_check_top(b, y + row, x + col))
 					return true;
 	return false;
 }
