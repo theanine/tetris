@@ -7,7 +7,9 @@
 #include "tetris_utils.h"
 #include "errors.h"
 
-#define TOTAL_PIECES    1
+#define TOTAL_PIECES     1
+#define INITIAL_LEVEL    1
+#define INITIAL_SCORE    0
 
 piece_t piece_list[TOTAL_PIECES] = {0};
 
@@ -274,7 +276,8 @@ void board_linecheck(board_t* b)
 
 void board_init(board_t* b, int width, int height)
 {
-	b->score  = 0;
+	b->level  = INITIAL_LEVEL;
+	b->score  = INITIAL_SCORE;
 	b->width  = width;
 	b->height = height;
 	b->cells  = calloc(height, sizeof(int*));
@@ -314,6 +317,7 @@ int board_get(board_t* b, int row, int col)
 void board_print(board_t* b)
 {
 	console_clear();
+	printf("Level: %d\n", b->level);
 	printf("Score: %d\n", b->score);
 	for (int col = 0; col < b->width+2; col++)
 		printf("-");
@@ -336,9 +340,12 @@ void board_print(board_t* b)
 #define DIFFICULTY_MULTIPLIER    1000000
 
 // drop time is in microseconds
-int difficulty_to_droptime(int difficulty)
+int board_getdroptime(board_t* b)
 {
-	assert(difficulty == 1);
-	
-	return (DIFFICULTY_MULTIPLIER / difficulty);
+	return DIFFICULTY_MULTIPLIER / b->level;
+}
+
+void board_levelup(board_t* b)
+{
+	b->level++;
 }

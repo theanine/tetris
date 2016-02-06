@@ -12,9 +12,9 @@ X drop timer
 
 X score
 X drop piece key
+X difficulty increases
 - pieces (7)
 - colored pieces
-- difficulty increases
 
 - preview next piece
 - leaderboard (including name query)

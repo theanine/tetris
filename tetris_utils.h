@@ -17,6 +17,7 @@ typedef struct board {
 	int   width;
 	int   height;
 	int** cells;
+	int   level;
 	int   score;
 } board_t;
 
@@ -66,6 +67,7 @@ void board_destroy(board_t* b);
 void board_set(board_t* b, int row, int col, int val);
 int board_get(board_t* b, int row, int col);
 void board_print(board_t* b);
-int difficulty_to_droptime(int difficulty);
+int board_getdroptime(board_t* b);
+void board_levelup(board_t* b);
 
 #endif /* TETRIS_UTILS */

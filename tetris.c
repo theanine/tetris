@@ -5,12 +5,12 @@
 #include "tetris_utils.h"
 #include "errors.h"
 
-#define BOARD_WIDTH         10
-#define BOARD_HEIGHT        10
-#define INITIAL_DIFFICULTY   1
-#define STARTING_ROW_POS    (1 - MAX_PIECE_HEIGHT)
-#define STARTING_COL_POS    ((BOARD_WIDTH - MAX_PIECE_WIDTH) / 2)
-#define INPUT_CHECK_FREQ    20   // fraction of drop time
+#define BOARD_WIDTH                10
+#define BOARD_HEIGHT               10
+#define STARTING_ROW_POS           (1 - MAX_PIECE_HEIGHT)
+#define STARTING_COL_POS           ((BOARD_WIDTH - MAX_PIECE_WIDTH) / 2)
+#define INPUT_CHECK_FREQ           20  // fraction of drop time
+#define DIFFICULTY_ACCELERATION    10  // in pieces
 
 int main(void)
 {
@@ -27,13 +27,18 @@ int main(void)
 		exit(1);
 	}
 	
-	int difficulty = INITIAL_DIFFICULTY;
-	int droptime = difficulty_to_droptime(difficulty);
+	int droptime = board_getdroptime(&board);
 	int time_passed = 0;
+	int piece_count = 0;
 	
 	bool gameover = false;
 	while (!gameover) {
 		piece_t piece = piece_gen();
+		piece_count++;
+		if (piece_count % DIFFICULTY_ACCELERATION == 0) {
+			board_levelup(&board);
+			droptime = board_getdroptime(&board);
+		}
 		
 		int row = STARTING_ROW_POS;
 		int col = STARTING_COL_POS;
@@ -49,7 +54,7 @@ int main(void)
 			
 			input_handle(&board, input, &piece, &row, &col);
 			
-			if (time_passed == droptime) {
+			if (time_passed >= droptime) {
 				input_handle(&board, KEY_DOWN, &piece, &row, &col);
 				time_passed -= droptime;
 			}
