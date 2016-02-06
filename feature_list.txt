@@ -13,8 +13,7 @@ X drop timer
 X score
 X drop piece key
 X difficulty increases
-- pieces (7)
-- colored pieces
+X pieces (7)
 
 - preview next piece
 - leaderboard (including name query)
@@ -22,3 +21,4 @@ X difficulty increases
 - hold piece
 - title screen w/options
 - demo/ai mode
+- colored pieces

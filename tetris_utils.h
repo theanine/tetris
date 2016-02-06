@@ -34,6 +34,7 @@ typedef enum piece_name {
 	PIECE_L_REVERSE,
 	PIECE_S,
 	PIECE_S_REVERSE,
+	PIECE_COUNT
 } piece_name_t;
 	
 typedef enum keycode {
