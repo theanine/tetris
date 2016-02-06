@@ -9,7 +9,7 @@
 #include "errors.h"
 
 #define BOARD_WIDTH                10
-#define BOARD_HEIGHT               10
+#define BOARD_HEIGHT               20
 #define STARTING_ROW_POS           (1 - MAX_PIECE_HEIGHT)
 #define STARTING_COL_POS           ((BOARD_WIDTH - MAX_PIECE_WIDTH) / 2)
 #define INPUT_CHECK_FREQ           20  // fraction of drop time
