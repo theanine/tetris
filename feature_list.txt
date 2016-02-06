@@ -7,6 +7,7 @@ X collisions (side wall + pieces)
 X rotate left/right
 X line completion check
 X game over screen
+X keyboard thread
 - drop timer
 
 - drop piece key

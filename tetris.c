@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+
 #include "tetris_utils.h"
+#include "errors.h"
 
 #define BOARD_WIDTH        10
 #define BOARD_HEIGHT       10
@@ -18,6 +21,11 @@ int main(void)
 	
 	piece_init();
 	
+	if (input_init() != SUCCESS) {
+		printf("ERROR: failed to initialize input thread!\n");
+		exit(1);
+	}
+	
 	bool gameover = false;
 	while (!gameover) {
 		piece_t piece = piece_gen();
@@ -30,13 +38,15 @@ int main(void)
 			piece_show(&board, piece, row, col);
 			board_print(&board);
 			
-			keycode_t input = get_input();
+			keycode_t input = input_pop();
 			
 			piece_hide(&board, piece, row, col);
 			
 			input_handle(&board, input, &piece, &row, &col);
 			
 			anchored = anchor_check(&board, piece, row, col);
+			
+			usleep(10000);
 		}
 		
 		piece_show(&board, piece, row, col);

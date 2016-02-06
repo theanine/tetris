@@ -12,7 +12,7 @@ BDIR=bin
 
 CFLAGS=-Werror -Wall -pedantic
 INCS=-I$(IDIR)
-LIBS=
+LIBS=-lpthread
 
 DEPS=
 SRCS=$(wildcard *.c)

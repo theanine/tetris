@@ -3,17 +3,11 @@
 #include <termios.h>
 #include <unistd.h>
 #include <assert.h>
+#include <pthread.h>
 #include "tetris_utils.h"
+#include "errors.h"
 
 #define TOTAL_PIECES    1
-
-#define SUCCESS         0
-#define ERR_GENERIC    -1
-#define ERR_PARAMS     -2
-#define ERR_OFF_TOP    -3
-#define ERR_OFF_BOTTOM -4
-#define ERR_OFF_LEFT   -5
-#define ERR_OFF_RIGHT  -6
 
 piece_t piece_list[TOTAL_PIECES] = {0};
 
@@ -118,8 +112,6 @@ void input_handle(board_t* b, keycode_t input, piece_t* piece, int* row, int* co
 			new_row++;
 			break;
 		default:
-			// do nothing
-			// printf("UNKNOWN\n");
 			break;
 	}
 	
@@ -129,6 +121,21 @@ void input_handle(board_t* b, keycode_t input, piece_t* piece, int* row, int* co
 	*row   = new_row;
 	*col   = new_col;
 	*piece = new_piece;
+}
+
+#define INPUT_BUFFER_SIZE   10
+keycode_t input_buffer[INPUT_BUFFER_SIZE];
+int input_produce_count = 0;
+int input_consume_count = 0;
+
+void input_queue(keycode_t key)
+{
+	// check for full buffer
+	while (input_produce_count - input_consume_count == INPUT_BUFFER_SIZE);
+	
+	// produce key
+	input_buffer[input_produce_count % INPUT_BUFFER_SIZE] = key;
+	input_produce_count++;
 }
 
 keycode_t get_input(void)
@@ -143,6 +150,36 @@ keycode_t get_input(void)
 		return KEY_UNKNOWN;
 	
 	return (keycode_t)getchar();
+}
+
+keycode_t input_pop(void)
+{
+	// check for empty buffer
+	if (input_produce_count - input_consume_count == 0)
+		return KEY_UNKNOWN;
+	
+	// consume key
+	keycode_t key = input_buffer[input_consume_count % INPUT_BUFFER_SIZE];
+	input_consume_count++;
+	return key;
+}
+
+void* input_handler(void* unused)
+{
+	while (1) {
+		keycode_t input = get_input();
+		input_queue(input);
+	}
+	pthread_exit(0);
+}
+
+static pthread_t input_thread;
+
+int input_init(void)
+{
+	if (pthread_create(&input_thread, NULL, &input_handler, NULL) != 0)
+		return ERR_GENERIC;
+	return SUCCESS;
 }
 
 bool collision_check_bottom(board_t* b, int row, int col)
