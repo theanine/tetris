@@ -7,6 +7,7 @@
 #include "console.h"
 #include "input.h"
 #include "errors.h"
+#include "graphics.h"
 
 #define BOARD_WIDTH                10
 #define BOARD_HEIGHT               20
@@ -49,7 +50,7 @@ int main(void)
 		bool anchored = false;
 		while (!anchored) {
 			piece_show(&board, piece, row, col);
-			board_print(&board);
+			graphics_update(&board);
 			
 			keycode_t input = input_pop();
 			

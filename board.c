@@ -102,29 +102,6 @@ int board_get(board_t* b, int row, int col)
 	return b->cells[row][col];
 }
 
-void board_print(board_t* b)
-{
-	console_clear();
-	printf("Level: %d\n", b->level);
-	printf("Score: %d\n", b->score);
-	for (int col = 0; col < b->width+2; col++)
-		printf("-");
-	
-	printf("\n");
-	for (int row = 0; row < b->height; row++) {
-		printf("|");
-		for (int col = 0; col < b->width; col++) {
-			printf("%s", (b->cells[row][col] == 0 ? " " : "█"));
-		}
-		printf("|\n");
-	}
-	
-	for (int col = 0; col < b->width+2; col++)
-		printf("-");
-	
-	printf("\n");
-}
-
 // drop time is in microseconds
 int board_getdroptime(board_t* b)
 {

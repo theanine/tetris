@@ -20,7 +20,6 @@ void board_init(board_t* b, int width, int height);
 void board_destroy(board_t* b);
 void board_set(board_t* b, int row, int col, int val);
 int board_get(board_t* b, int row, int col);
-void board_print(board_t* b);
 int board_getdroptime(board_t* b);
 void board_levelup(board_t* b);
 
