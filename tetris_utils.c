@@ -253,15 +253,17 @@ void board_linecheck(board_t* b)
 			for (int col = 0; col < b->width; col++)
 				board_set(b, row, col, 0);
 			board_shift(b, row);
+			b->score++;
 		}
 	}
 }
 
 void board_init(board_t* b, int width, int height)
 {
-	b->width = width;
+	b->score  = 0;
+	b->width  = width;
 	b->height = height;
-	b->cells = calloc(height, sizeof(int*));
+	b->cells  = calloc(height, sizeof(int*));
 	for (int row = 0; row < height; row++)
 		b->cells[row] = calloc(width, sizeof(int*));
 }
@@ -298,9 +300,10 @@ int board_get(board_t* b, int row, int col)
 void board_print(board_t* b)
 {
 	console_clear();
+	printf("Score: %d\n", b->score);
 	for (int col = 0; col < b->width+2; col++)
 		printf("-");
-
+	
 	printf("\n");
 	for (int row = 0; row < b->height; row++) {
 		printf("|");

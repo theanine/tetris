@@ -10,8 +10,8 @@ X game over screen
 X keyboard thread
 X drop timer
 
+X score
 - drop piece key
-- score
 - pieces (7)
 - colored pieces
 - difficulty increases

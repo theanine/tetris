@@ -17,6 +17,7 @@ typedef struct board {
 	int   width;
 	int   height;
 	int** cells;
+	int   score;
 } board_t;
 
 // piece_t represents the pieces
