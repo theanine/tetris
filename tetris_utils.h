@@ -63,5 +63,6 @@ void board_destroy(board_t* b);
 void board_set(board_t* b, int row, int col, int val);
 int board_get(board_t* b, int row, int col);
 void board_print(board_t* b);
+int difficulty_to_droptime(int difficulty);
 
 #endif /* TETRIS_UTILS */

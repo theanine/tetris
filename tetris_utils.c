@@ -315,3 +315,13 @@ void board_print(board_t* b)
 	
 	printf("\n");
 }
+
+#define DIFFICULTY_MULTIPLIER    1000000
+
+// drop time is in microseconds
+int difficulty_to_droptime(int difficulty)
+{
+	assert(difficulty == 1);
+	
+	return (DIFFICULTY_MULTIPLIER / difficulty);
+}

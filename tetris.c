@@ -5,11 +5,12 @@
 #include "tetris_utils.h"
 #include "errors.h"
 
-#define BOARD_WIDTH        10
-#define BOARD_HEIGHT       10
-
-#define STARTING_ROW_POS   (1 - MAX_PIECE_HEIGHT)
-#define STARTING_COL_POS   ((BOARD_WIDTH - MAX_PIECE_WIDTH) / 2)
+#define BOARD_WIDTH         10
+#define BOARD_HEIGHT        10
+#define INITIAL_DIFFICULTY   1
+#define STARTING_ROW_POS    (1 - MAX_PIECE_HEIGHT)
+#define STARTING_COL_POS    ((BOARD_WIDTH - MAX_PIECE_WIDTH) / 2)
+#define INPUT_CHECK_FREQ    20   // fraction of drop time
 
 int main(void)
 {
@@ -25,6 +26,10 @@ int main(void)
 		printf("ERROR: failed to initialize input thread!\n");
 		exit(1);
 	}
+	
+	int difficulty = INITIAL_DIFFICULTY;
+	int droptime = difficulty_to_droptime(difficulty);
+	int time_passed = 0;
 	
 	bool gameover = false;
 	while (!gameover) {
@@ -44,9 +49,16 @@ int main(void)
 			
 			input_handle(&board, input, &piece, &row, &col);
 			
+			if (time_passed == droptime) {
+				input_handle(&board, KEY_DOWN, &piece, &row, &col);
+				time_passed -= droptime;
+			}
+			
 			anchored = anchor_check(&board, piece, row, col);
 			
-			usleep(10000);
+			int wait = droptime / INPUT_CHECK_FREQ;
+			time_passed += wait;
+			usleep(wait);
 		}
 		
 		piece_show(&board, piece, row, col);
