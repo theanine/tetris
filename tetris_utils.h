@@ -40,7 +40,9 @@ typedef enum keycode {
 	KEY_UP      = 65,
 	KEY_DOWN    = 66,
 	KEY_RIGHT   = 67,
-	KEY_LEFT    = 68
+	KEY_LEFT    = 68,
+	KEY_ENTER   = '\n',
+	KEY_SPACE   = ' ',
 } keycode_t;
 
 void piece_init(void);

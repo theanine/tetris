@@ -11,7 +11,7 @@ X keyboard thread
 X drop timer
 
 X score
-- drop piece key
+X drop piece key
 - pieces (7)
 - colored pieces
 - difficulty increases

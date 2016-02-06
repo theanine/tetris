@@ -111,8 +111,15 @@ void input_handle(board_t* b, keycode_t input, piece_t* piece, int* row, int* co
 		case KEY_DOWN:
 			new_row++;
 			break;
-		default:
+		case KEY_SPACE:
+			while (!collision_check(b, new_piece, new_row, new_col))
+				new_row++;
+			new_row--;
 			break;
+		case KEY_ENTER:
+			// nothing for now
+		default:
+			return;
 	}
 	
 	if (collision_check(b, new_piece, new_row, new_col))
@@ -142,14 +149,17 @@ keycode_t get_input(void)
 {
 	// 27 and 29 are the first two characters of an arrow key input
 	int c = getchar();
-	if (c != 27)
-		return KEY_UNKNOWN;
+	if (c == 27) {
+		c = getchar();
+		if (c != 91)
+			return KEY_UNKNOWN;
+		return (keycode_t)getchar();
+	}
 	
-	c = getchar();
-	if (c != 91)
-		return KEY_UNKNOWN;
+	if (c == '\n' || c == ' ')
+		return (keycode_t)c;
 	
-	return (keycode_t)getchar();
+	return KEY_UNKNOWN;
 }
 
 keycode_t input_pop(void)
@@ -198,11 +208,15 @@ bool collision_check(board_t* b, piece_t piece, int row, int col)
 {
 	TRACE("%s(%d, %d)\n", __func__, row, col);
 	
-	for (int y = 0; y < MAX_PIECE_HEIGHT; y++)
-		for (int x = 0; x < MAX_PIECE_WIDTH; x++)
-			if (piece.cells[y][x])
-				if (board_get(b, row + y, col + x) != 0)
+	for (int y = 0; y < MAX_PIECE_HEIGHT; y++) {
+		for (int x = 0; x < MAX_PIECE_WIDTH; x++) {
+			if (piece.cells[y][x]) {
+				int val = board_get(b, row + y, col + x);
+				if (val != 0)
 					return true;
+			}
+		}
+	}
 	return false;
 }
 
