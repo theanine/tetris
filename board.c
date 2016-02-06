@@ -114,7 +114,7 @@ void board_print(board_t* b)
 	for (int row = 0; row < b->height; row++) {
 		printf("|");
 		for (int col = 0; col < b->width; col++) {
-			printf("%c", (b->cells[row][col] == 0 ? ' ' : '#'));
+			printf("%s", (b->cells[row][col] == 0 ? " " : "█"));
 		}
 		printf("|\n");
 	}
