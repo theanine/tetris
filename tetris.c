@@ -2,7 +2,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "tetris_utils.h"
+#include "board.h"
+#include "piece.h"
+#include "console.h"
+#include "input.h"
 #include "errors.h"
 
 #define BOARD_WIDTH                10
