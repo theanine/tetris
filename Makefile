@@ -1,4 +1,4 @@
-.PHONY: clean all
+.PHONY: clean all debug run
 .DEFAULT_GOAL := all
 
 BIN_NAME=tetris
@@ -32,6 +32,12 @@ $(BINS): $(BDIR)/%: $(ODIR)/%.o $(OBJS) | $(BDIR)
 	@gcc -o $@ $^ $(CFLAGS) $(LIBS)
 
 all: $(BINS)
+
+debug: all
+	gdb ./bin/tetris -ex "r"
+
+run: all
+	./bin/tetris
 
 clean:
 	@echo "CLEAN $(ODIR) $(BDIR)"
