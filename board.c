@@ -98,14 +98,14 @@ void board_set(board_t* b, int row, int col, int val)
 int board_get(board_t* b, int row, int col)
 {
 	TRACE("%s(%p, %d, %d)\n", __func__, (void*)b, row, col);
-	if (row < 0)
-		return ERR_OFF_TOP;
-	if (row >= b->height)
-		return ERR_OFF_BOTTOM;
 	if (col < 0)
 		return ERR_OFF_LEFT;
 	if (col >= b->width)
 		return ERR_OFF_RIGHT;
+	if (row >= b->height)
+		return ERR_OFF_BOTTOM;
+	if (row < 0)
+		return ERR_OFF_TOP;
 	return b->cells[row][col];
 }
 
