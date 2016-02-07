@@ -22,6 +22,8 @@
 #define INITIAL_LEVEL            1
 #define INITIAL_SCORE            0
 #define DIFFICULTY_MULTIPLIER    1000000
+#define TETRIS_ROW_COUNT         4
+#define TETRIS_ROW_SCORE         10
 
 bool board_gameover(board_t* b, piece_t piece, int row, int col)
 {
@@ -52,21 +54,28 @@ void board_shift(board_t* b, int start_row)
 
 void board_linecheck(board_t* b)
 {
+	int rows_cleared = 0;
 	for (int row = 0; row < b->height; row++) {
 		
 		bool row_cleared = true;
 		
 		for (int col = 0; col < b->width; col++)
-			if (board_get(b, row, col) == 0)
+			if (board_get(b, row, col) == COLOR_NONE)
 				row_cleared = false;
 		
 		if (row_cleared) {
+			rows_cleared++;
 			for (int col = 0; col < b->width; col++)
 				board_set(b, row, col, COLOR_NONE);
 			board_shift(b, row);
-			b->score++;
 		}
 	}
+	
+	assert(rows_cleared <= TETRIS_ROW_COUNT);
+	if (rows_cleared == TETRIS_ROW_COUNT)
+		b->score += TETRIS_ROW_SCORE;
+	else
+		b->score += rows_cleared;
 }
 
 void board_init(board_t* b, int width, int height)

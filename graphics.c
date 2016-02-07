@@ -27,14 +27,16 @@ void graphics_update(board_t* b)
 	for (int row = 0; row < b->height; row++) {
 		printf("│");
 		for (int col = 0; col < b->width; col++) {
-color_t board_get(board_t* b, int row, int col);
-			if (b->cells[row][col] != COLOR_NONE) {
-				console_setcolor(b->cells[row][col]);
-				printf("█");
-				console_setcolor(COLOR_NORMAL);
-			} else {
+			color_t color = board_get(b, row, col);
+			
+			if (color == COLOR_NONE) {
 				printf(" ");
+				continue;
 			}
+			
+			console_setcolor(color);
+			printf("█");
+			console_setcolor(COLOR_NORMAL);
 		}
 		printf("│\n");
 	}

@@ -168,15 +168,18 @@ void piece_rotate(piece_t* piece)
 
 bool piece_collision_check_bottom(board_t* b, int row, int col)
 {
-	int val = board_get(b, row, col);
-	TRACE("%s: %d\n", __func__, val);
-	return (val == 1 || val == ERR_OFF_BOTTOM);
+	int color = board_get(b, row, col);
+	TRACE("%s: %d\n", __func__, color);
+	if (color != COLOR_NONE && color > 0)
+		return true;
+	
+	return (color == ERR_OFF_BOTTOM);
 }
 
 bool piece_collision_check_top(board_t* b, int row, int col)
 {
-	int val = board_get(b, row, col);
-	return (val == ERR_OFF_TOP);
+	int color = board_get(b, row, col);
+	return (color == ERR_OFF_TOP);
 }
 
 bool piece_collision_check(board_t* b, piece_t piece, int row, int col)
@@ -186,12 +189,15 @@ bool piece_collision_check(board_t* b, piece_t piece, int row, int col)
 	for (int y = 0; y < MAX_PIECE_HEIGHT; y++) {
 		for (int x = 0; x < MAX_PIECE_WIDTH; x++) {
 			if (piece_get_cell(&piece, y, x)) {
-				int val = board_get(b, row + y, col + x);
-				if (val != 0 && val != ERR_OFF_TOP)
+				int color = board_get(b, row + y, col + x);
+				if (color != COLOR_NONE && color != ERR_OFF_TOP) {
+					TRACE("Found a collision at (%d, %d) with color %d\n", row + y, col + x, color);
 					return true;
+				}
 			}
 		}
 	}
+	TRACE("%s: No collisions.\n", __func__);
 	return false;
 }
 
@@ -210,6 +216,6 @@ bool piece_anchor_check(board_t* b, piece_t piece, int row, int col)
 		}
 	}
 	
-	TRACE("No collisions.\n");
+	TRACE("%s: No collisions.\n", __func__);
 	return false;
 }

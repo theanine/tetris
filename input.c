@@ -26,6 +26,8 @@ static pthread_t input_thread;
 
 void input_handle(board_t* b, keycode_t input, piece_t* piece, int* row, int* col)
 {
+	TRACE("%s()\n", __func__);
+	
 	int new_row       = *row;
 	int new_col       = *col;
 	piece_t new_piece = *piece;
