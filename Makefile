@@ -34,10 +34,10 @@ $(BINS): $(BDIR)/%: $(ODIR)/%.o $(OBJS) | $(BDIR)
 all: $(BINS)
 
 debug: all
-	gdb ./bin/tetris -ex "r"
+	-@gdb ./bin/tetris -ex "r" 2>/dev/null; true
 
 run: all
-	./bin/tetris
+	-@./bin/tetris 2>/dev/null; true
 
 clean:
 	@echo "CLEAN $(ODIR) $(BDIR)"
