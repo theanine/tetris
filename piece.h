@@ -20,6 +20,7 @@ typedef enum piece_name {
 // piece_t represents the pieces
 typedef struct piece {
 	piece_name_t name;
+	int rotated_degrees;
 	bool cells[MAX_PIECE_HEIGHT][MAX_PIECE_WIDTH];
 } piece_t;
 
@@ -28,6 +29,7 @@ typedef struct piece {
 const char* piece_to_str(piece_name_t piece);
 void piece_init(void);
 piece_t piece_gen(void);
+bool piece_get_cell(piece_t* piece, int y, int x);
 void piece_show(board_t* board, piece_t piece, int row, int col);
 void piece_hide(board_t* board, piece_t piece, int row, int col);
 bool piece_anchor_check(board_t* b, piece_t piece, int row, int col);

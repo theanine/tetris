@@ -36,6 +36,7 @@ void piece_init(void)
 {
 	// PIECE_STRAIGHT
 	piece_list[PIECE_STRAIGHT].name = PIECE_STRAIGHT;
+	piece_list[PIECE_STRAIGHT].rotated_degrees = 0;
 	piece_list[PIECE_STRAIGHT].cells[2][0] = 1;
 	piece_list[PIECE_STRAIGHT].cells[2][1] = 1;
 	piece_list[PIECE_STRAIGHT].cells[2][2] = 1;
@@ -43,6 +44,7 @@ void piece_init(void)
 	
 	// PIECE_SQUARE
 	piece_list[PIECE_SQUARE].name = PIECE_SQUARE;
+	piece_list[PIECE_SQUARE].rotated_degrees = 0;
 	piece_list[PIECE_SQUARE].cells[1][1] = 1;
 	piece_list[PIECE_SQUARE].cells[1][2] = 1;
 	piece_list[PIECE_SQUARE].cells[2][1] = 1;
@@ -50,6 +52,7 @@ void piece_init(void)
 	
 	// PIECE_T
 	piece_list[PIECE_T].name = PIECE_T;
+	piece_list[PIECE_T].rotated_degrees = 0;
 	piece_list[PIECE_T].cells[1][2] = 1;
 	piece_list[PIECE_T].cells[2][1] = 1;
 	piece_list[PIECE_T].cells[2][2] = 1;
@@ -57,6 +60,7 @@ void piece_init(void)
 	
 	// PIECE_L
 	piece_list[PIECE_L].name = PIECE_L;
+	piece_list[PIECE_L].rotated_degrees = 0;
 	piece_list[PIECE_L].cells[0][1] = 1;
 	piece_list[PIECE_L].cells[1][1] = 1;
 	piece_list[PIECE_L].cells[2][1] = 1;
@@ -64,6 +68,7 @@ void piece_init(void)
 	
 	// PIECE_L_REVERSE
 	piece_list[PIECE_L_REVERSE].name = PIECE_L_REVERSE;
+	piece_list[PIECE_L_REVERSE].rotated_degrees = 0;
 	piece_list[PIECE_L_REVERSE].cells[0][2] = 1;
 	piece_list[PIECE_L_REVERSE].cells[1][2] = 1;
 	piece_list[PIECE_L_REVERSE].cells[2][2] = 1;
@@ -71,6 +76,7 @@ void piece_init(void)
 	
 	// PIECE_S
 	piece_list[PIECE_S].name = PIECE_S;
+	piece_list[PIECE_S].rotated_degrees = 0;
 	piece_list[PIECE_S].cells[1][2] = 1;
 	piece_list[PIECE_S].cells[1][3] = 1;
 	piece_list[PIECE_S].cells[2][1] = 1;
@@ -78,6 +84,7 @@ void piece_init(void)
 	
 	// PIECE_S_REVERSE
 	piece_list[PIECE_S_REVERSE].name = PIECE_S_REVERSE;
+	piece_list[PIECE_S_REVERSE].rotated_degrees = 0;
 	piece_list[PIECE_S_REVERSE].cells[1][1] = 1;
 	piece_list[PIECE_S_REVERSE].cells[1][2] = 1;
 	piece_list[PIECE_S_REVERSE].cells[2][2] = 1;
@@ -94,11 +101,44 @@ piece_t piece_gen(void)
 	return piece_list[name];
 }
 
+bool piece_get_cell(piece_t* piece, int y, int x)
+{
+	switch (piece->name) {
+		
+		// square doesn't need rotation
+		case PIECE_SQUARE:
+			return piece->cells[y][x];
+		
+		// these pieces only need 180 rotation
+		case PIECE_S:
+		case PIECE_S_REVERSE:
+		case PIECE_STRAIGHT:
+			if (piece->rotated_degrees % 180 == 0)
+				return piece->cells[y][x];
+			return piece->cells[x][MAX_PIECE_HEIGHT-y-1];
+		
+		// these pieces need all rotations
+		case PIECE_T:
+		case PIECE_L:
+		case PIECE_L_REVERSE:
+			if (piece->rotated_degrees == 90)
+				return piece->cells[MAX_PIECE_HEIGHT-x-1][y];
+			if (piece->rotated_degrees == 180)
+				return piece->cells[MAX_PIECE_HEIGHT-y-1][MAX_PIECE_HEIGHT-x-1];
+			if (piece->rotated_degrees == 270)
+				return piece->cells[x][MAX_PIECE_HEIGHT-y-1];
+			return piece->cells[y][x];
+		
+		default:
+			assert(false);
+	}
+}
+
 void piece_visibility(board_t* board, piece_t piece, int row, int col, bool shown)
 {
 	for (int y = 0; y < MAX_PIECE_HEIGHT; y++)
 		for (int x = 0; x < MAX_PIECE_WIDTH; x++)
-			if (piece.cells[y][x])
+			if (piece_get_cell(&piece, y, x))
 				board_set(board, y + row, x + col, shown);
 }
 
@@ -114,25 +154,8 @@ void piece_hide(board_t* board, piece_t piece, int row, int col)
 
 void piece_rotate(piece_t* piece)
 {
-	assert(MAX_PIECE_WIDTH == MAX_PIECE_HEIGHT);
-	
-	int start_idx = 0;
-	int last_idx  = MAX_PIECE_WIDTH - 1;
-	
-	for (int i=start_idx; i<last_idx; i++) {
-		bool tmp = piece->cells[i][last_idx];
-		piece->cells[i][last_idx] = piece->cells[start_idx][i]; 
-		piece->cells[start_idx][i] = piece->cells[last_idx-i][start_idx];
-		piece->cells[last_idx-i][start_idx] = piece->cells[last_idx][last_idx-i]; 
-		piece->cells[last_idx][last_idx-i] = tmp;
-	}
-	
-	bool tmp = piece->cells[1][1];
-	piece->cells[1][1] = piece->cells[2][1];
-	piece->cells[2][1] = piece->cells[2][2];
-	piece->cells[2][2] = piece->cells[1][2];
-	piece->cells[1][2] = tmp;
-	
+	piece->rotated_degrees += 90;
+	piece->rotated_degrees %= 360;
 }
 
 bool piece_collision_check_bottom(board_t* b, int row, int col)
@@ -154,7 +177,7 @@ bool piece_collision_check(board_t* b, piece_t piece, int row, int col)
 	
 	for (int y = 0; y < MAX_PIECE_HEIGHT; y++) {
 		for (int x = 0; x < MAX_PIECE_WIDTH; x++) {
-			if (piece.cells[y][x]) {
+			if (piece_get_cell(&piece, y, x)) {
 				int val = board_get(b, row + y, col + x);
 				if (val != 0 && val != ERR_OFF_TOP)
 					return true;
@@ -170,7 +193,7 @@ bool piece_anchor_check(board_t* b, piece_t piece, int row, int col)
 	
 	for (int y = MAX_PIECE_HEIGHT-1; y > 0; y--) {
 		for (int x = 0; x < MAX_PIECE_WIDTH; x++) {
-			if (piece.cells[y][x]) {
+			if (piece_get_cell(&piece, y, x)) {
 				if (piece_collision_check_bottom(b, y + row + 1, x + col)) {
 					TRACE("Detected a collision with [%d,%d] at [%d,%d]\n", y, x, y + row + 1, x + col);
 					return true;
