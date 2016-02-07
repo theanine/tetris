@@ -18,20 +18,23 @@ void graphics_update(board_t* b)
 	printf("Level: %d\n", b->level);
 	printf("Score: %d\n", b->score);
 	
-	for (int col = 0; col < b->width+2; col++)
-		printf("-");
+	printf("┌");
+	for (int col = 0; col < b->width; col++)
+		printf("─");
+	printf("┐");
 	
 	printf("\n");
 	for (int row = 0; row < b->height; row++) {
-		printf("|");
-		for (int col = 0; col < b->width; col++) {
+		printf("│");
+		for (int col = 0; col < b->width; col++)
 			printf("%s", (b->cells[row][col] == 0 ? " " : "█"));
-		}
-		printf("|\n");
+		printf("│\n");
 	}
 	
-	for (int col = 0; col < b->width+2; col++)
-		printf("-");
+	printf("└");
+	for (int col = 0; col < b->width; col++)
+		printf("─");
+	printf("┘");
 	
 	printf("\n");
 }
