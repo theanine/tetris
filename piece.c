@@ -141,81 +141,8 @@ bool piece_get_cell(piece_t* piece, int y, int x)
 	}
 }
 
-void piece_visibility(board_t* board, piece_t piece, int row, int col, bool shown)
-{
-	color_t color = shown ? piece.color : COLOR_NONE;
-	for (int y = 0; y < MAX_PIECE_HEIGHT; y++)
-		for (int x = 0; x < MAX_PIECE_WIDTH; x++)
-			if (piece_get_cell(&piece, y, x))
-				board_set(board, y + row, x + col, color);
-}
-
-void piece_show(board_t* board, piece_t piece, int row, int col)
-{
-	piece_visibility(board, piece, row, col, true);
-}
-
-void piece_hide(board_t* board, piece_t piece, int row, int col)
-{
-	piece_visibility(board, piece, row, col, false);
-}
-
 void piece_rotate(piece_t* piece)
 {
 	piece->rotated_degrees += 90;
 	piece->rotated_degrees %= 360;
-}
-
-bool piece_collision_check_bottom(board_t* b, int row, int col)
-{
-	int color = board_get(b, row, col);
-	TRACE("%s: %d\n", __func__, color);
-	if (color != COLOR_NONE && color > 0)
-		return true;
-	
-	return (color == ERR_OFF_BOTTOM);
-}
-
-bool piece_collision_check_top(board_t* b, int row, int col)
-{
-	int color = board_get(b, row, col);
-	return (color == ERR_OFF_TOP);
-}
-
-bool piece_collision_check(board_t* b, piece_t piece, int row, int col)
-{
-	TRACE("%s(%d, %d)\n", __func__, row, col);
-	
-	for (int y = 0; y < MAX_PIECE_HEIGHT; y++) {
-		for (int x = 0; x < MAX_PIECE_WIDTH; x++) {
-			if (piece_get_cell(&piece, y, x)) {
-				int color = board_get(b, row + y, col + x);
-				if (color != COLOR_NONE && color != ERR_OFF_TOP) {
-					TRACE("Found a collision at (%d, %d) with color %d\n", row + y, col + x, color);
-					return true;
-				}
-			}
-		}
-	}
-	TRACE("%s: No collisions.\n", __func__);
-	return false;
-}
-
-bool piece_anchor_check(board_t* b, piece_t piece, int row, int col)
-{
-	TRACE("%s(%d, %d)\n", __func__, row, col);
-	
-	for (int y = MAX_PIECE_HEIGHT-1; y > 0; y--) {
-		for (int x = 0; x < MAX_PIECE_WIDTH; x++) {
-			if (piece_get_cell(&piece, y, x)) {
-				if (piece_collision_check_bottom(b, y + row + 1, x + col)) {
-					TRACE("Detected a collision with [%d,%d] at [%d,%d]\n", y, x, y + row + 1, x + col);
-					return true;
-				}
-			}
-		}
-	}
-	
-	TRACE("%s: No collisions.\n", __func__);
-	return false;
 }

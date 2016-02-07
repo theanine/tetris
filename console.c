@@ -35,6 +35,16 @@ void console_init(console_t* c)
 	console_setcolor(COLOR_NORMAL);
 }
 
+void console_destroy(console_t* c)
+{
+	tcsetattr(STDIN_FILENO, TCSANOW, &c->old_t);
+}
+
+void console_clear(void)
+{
+	write(STDOUT_FILENO, " \033[1;1H\033[2J", 12);
+}
+
 void console_setcolor(color_t color)
 {
 	const char* color_str = "";
@@ -52,14 +62,4 @@ void console_setcolor(color_t color)
 	}
 	
 	printf("%s", color_str);
-}
-
-void console_destroy(console_t* c)
-{
-	tcsetattr(STDIN_FILENO, TCSANOW, &c->old_t);
-}
-
-void console_clear(void)
-{
-	write(STDOUT_FILENO, " \033[1;1H\033[2J", 12);
 }

@@ -19,21 +19,21 @@
 #define TRACE(...)  do { } while (0)
 #endif
 
-#define INITIAL_LEVEL            1
-#define INITIAL_SCORE            0
-#define DIFFICULTY_MULTIPLIER    1000000
-#define TETRIS_ROW_COUNT         4
-#define TETRIS_ROW_SCORE         10
+#define INITIAL_LEVEL              1
+#define INITIAL_SCORE              0
+#define DIFFICULTY_MULTIPLIER      1000000
+#define TETRIS_ROW_COUNT           4
+#define TETRIS_ROW_SCORE           10
+#define DIFFICULTY_ACCELERATION    10     // in pieces
 
-bool board_gameover(board_t* b, piece_t piece, int row, int col)
+bool board_gameover(board_t* b)
 {
 	for (int y = 0; y < MAX_PIECE_HEIGHT; y++) {
 		for (int x = 0; x < MAX_PIECE_WIDTH; x++) {
-			if (piece_get_cell(&piece, y, x)) {
-				if (piece_collision_check_top(b, y + row, x + col)) {
-					TRACE("%s caused gameover with (%d,%d) at (%d,%d)\n", piece_to_str(piece.name), y, x, y + row, x + col);
-					TRACE("Piece was %sconsidered anchored.\n", piece_anchor_check(b, piece, row, col) ? "" : "NOT ");
-					// getchar();
+			if (piece_get_cell(&b->piece, y, x)) {
+				if (piece_collision_check_top(b, y + b->row, x + b->col)) {
+					TRACE("%s caused gameover with (%d,%d) at (%d,%d)\n", piece_to_str(b->piece.name), y, x, y + b->row, x + b->col);
+					TRACE("Piece was %sconsidered anchored.\n", piece_anchor_check(b) ? "" : "NOT ");
 					return true;
 				}
 			}
@@ -98,7 +98,7 @@ void board_destroy(board_t* b)
 
 void board_set(board_t* b, int row, int col, color_t color)
 {
-	TRACE("%s(%p, %d, %d, %d)\n", __func__, (void*)b, row, col, val);
+	TRACE("%s(%p, %d, %d, %d)\n", __func__, (void*)b, row, col, color);
 	if (row >= 0 && row < b->height)
 		if (col >= 0 && col < b->width)
 			b->cells[row][col] = color;
@@ -106,7 +106,6 @@ void board_set(board_t* b, int row, int col, color_t color)
 
 color_t board_get(board_t* b, int row, int col)
 {
-	TRACE("%s(%p, %d, %d)\n", __func__, (void*)b, row, col);
 	if (col < 0)
 		return ERR_OFF_LEFT;
 	if (col >= b->width)
@@ -127,4 +126,93 @@ int board_getdroptime(board_t* b)
 void board_levelup(board_t* b)
 {
 	b->level++;
+}
+
+void board_newpiece(board_t* b)
+{
+	int start_row_pos = 1 - MAX_PIECE_HEIGHT;
+	int start_col_pos = (b->width - MAX_PIECE_WIDTH) / 2;
+	
+	b->row   = start_row_pos;
+	b->col   = start_col_pos;
+	b->piece = piece_gen();
+	
+	b->piece_count++;
+	if (b->piece_count % DIFFICULTY_ACCELERATION == 0)
+		board_levelup(b);
+}
+
+void piece_visibility(board_t* b, bool shown)
+{
+	color_t color = shown ? b->piece.color : COLOR_NONE;
+	for (int y = 0; y < MAX_PIECE_HEIGHT; y++)
+		for (int x = 0; x < MAX_PIECE_WIDTH; x++)
+			if (piece_get_cell(&b->piece, y, x))
+				board_set(b, y + b->row, x + b->col, color);
+}
+
+void piece_show(board_t* b)
+{
+	piece_visibility(b, true);
+}
+
+void piece_hide(board_t* b)
+{
+	piece_visibility(b, false);
+}
+
+bool piece_collision_check_bottom(board_t* b, int row, int col)
+{
+	int color = board_get(b, row, col);
+	TRACE("%s: %d\n", __func__, color);
+	if (color != COLOR_NONE && color > 0)
+		return true;
+	
+	return (color == ERR_OFF_BOTTOM);
+}
+
+bool piece_collision_check_top(board_t* b, int row, int col)
+{
+	int color = board_get(b, row, col);
+	return (color == ERR_OFF_TOP);
+}
+
+bool piece_collision_check(board_t* b, piece_t* p, int row, int col)
+{
+	TRACE("%s(%d, %d)\n", __func__, row, col);
+	
+	for (int y = 0; y < MAX_PIECE_HEIGHT; y++) {
+		for (int x = 0; x < MAX_PIECE_WIDTH; x++) {
+			if (piece_get_cell(p, y, x)) {
+				int color = board_get(b, row + y, col + x);
+				if (color != COLOR_NONE && color != ERR_OFF_TOP) {
+					TRACE("Found a collision at (%d, %d) with color %d\n", row + y, col + x, color);
+					return true;
+				}
+			}
+		}
+	}
+	TRACE("%s: No collisions.\n", __func__);
+	return false;
+}
+
+bool piece_anchor_check(board_t* b)
+{
+	TRACE("%s(%d, %d)\n", __func__, b->row, b->col);
+	
+	for (int y = MAX_PIECE_HEIGHT-1; y > 0; y--) {
+		for (int x = 0; x < MAX_PIECE_WIDTH; x++) {
+			if (piece_get_cell(&b->piece, y, x)) {
+				if (piece_get_cell(&b->piece, y + 1, x))
+					continue;
+				if (piece_collision_check_bottom(b, b->row + y + 1, b->col + x)) {
+					TRACE("Detected a collision with [%d,%d] at [%d,%d]\n", y, x, b->row + y + 1, b->col + x);
+					return true;
+				}
+			}
+		}
+	}
+	
+	TRACE("%s: No collisions.\n", __func__);
+	return false;
 }

@@ -24,13 +24,13 @@ int input_produce_count = 0;
 int input_consume_count = 0;
 static pthread_t input_thread;
 
-void input_handle(board_t* b, keycode_t input, piece_t* piece, int* row, int* col)
+void input_handle(board_t* b, keycode_t input)
 {
 	TRACE("%s()\n", __func__);
 	
-	int new_row       = *row;
-	int new_col       = *col;
-	piece_t new_piece = *piece;
+	int new_row       = b->row;
+	int new_col       = b->col;
+	piece_t new_piece = b->piece;
 	
 	switch (input) {
 		case KEY_LEFT:
@@ -46,7 +46,7 @@ void input_handle(board_t* b, keycode_t input, piece_t* piece, int* row, int* co
 			new_row++;
 			break;
 		case KEY_SPACE:
-			while (!piece_collision_check(b, new_piece, new_row, new_col))
+			while (!piece_collision_check(b, &new_piece, new_row, new_col))
 				new_row++;
 			new_row--;
 			break;
@@ -56,12 +56,12 @@ void input_handle(board_t* b, keycode_t input, piece_t* piece, int* row, int* co
 			return;
 	}
 	
-	if (piece_collision_check(b, new_piece, new_row, new_col))
+	if (piece_collision_check(b, &new_piece, new_row, new_col))
 		return;
 	
-	*row   = new_row;
-	*col   = new_col;
-	*piece = new_piece;
+	b->row   = new_row;
+	b->col   = new_col;
+	b->piece = new_piece;
 }
 
 void input_queue(keycode_t key)
@@ -94,8 +94,8 @@ keycode_t input_get(void)
 keycode_t input_pop(void)
 {
 	// check for empty buffer
-	if (input_produce_count - input_consume_count == 0)
-		return KEY_UNKNOWN;
+	while (input_produce_count - input_consume_count == 0)
+		sched_yield();
 	
 	// consume key
 	keycode_t key = input_buffer[input_consume_count % INPUT_BUFFER_SIZE];
