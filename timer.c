@@ -61,9 +61,9 @@ void* timer_handler(void* arg)
 	while (1) {
 		timer_suspend();
 		while (!anchored) {
+			anchored = piece_anchor_check(b);
 			input_queue(KEY_DOWN);
 			int droptime = board_getdroptime(b);
-			anchored = piece_anchor_check(b);
 			usleep(droptime);
 		}
 	}
