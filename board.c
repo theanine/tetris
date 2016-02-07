@@ -25,11 +25,18 @@
 
 bool board_gameover(board_t* b, piece_t piece, int row, int col)
 {
-	for (int y = 0; y < MAX_PIECE_HEIGHT; y++)
-		for (int x = 0; x < MAX_PIECE_WIDTH; x++)
-			if (piece.cells[y][x])
-				if (piece_collision_check_top(b, y + row, x + col))
+	for (int y = 0; y < MAX_PIECE_HEIGHT; y++) {
+		for (int x = 0; x < MAX_PIECE_WIDTH; x++) {
+			if (piece.cells[y][x]) {
+				if (piece_collision_check_top(b, y + row, x + col)) {
+					TRACE("%s caused gameover with (%d,%d) at (%d,%d)\n", piece_to_str(piece.name), y, x, y + row, x + col);
+					TRACE("Piece was %sconsidered anchored.\n", piece_anchor_check(b, piece, row, col) ? "" : "NOT ");
+					// getchar();
 					return true;
+				}
+			}
+		}
+	}
 	return false;
 }
 

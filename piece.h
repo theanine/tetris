@@ -6,11 +6,6 @@
 #define MAX_PIECE_HEIGHT  4
 #define MAX_PIECE_WIDTH   4
 
-// piece_t represents the pieces
-typedef struct piece {
-	bool cells[MAX_PIECE_HEIGHT][MAX_PIECE_WIDTH];
-} piece_t;
-
 typedef enum piece_name {
 	PIECE_STRAIGHT,
 	PIECE_SQUARE,
@@ -22,8 +17,15 @@ typedef enum piece_name {
 	PIECE_COUNT
 } piece_name_t;
 
+// piece_t represents the pieces
+typedef struct piece {
+	piece_name_t name;
+	bool cells[MAX_PIECE_HEIGHT][MAX_PIECE_WIDTH];
+} piece_t;
+
 #include "board.h"
 
+const char* piece_to_str(piece_name_t piece);
 void piece_init(void);
 piece_t piece_gen(void);
 void piece_show(board_t* board, piece_t piece, int row, int col);

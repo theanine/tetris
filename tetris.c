@@ -49,9 +49,6 @@ int main(void)
 		
 		bool anchored = false;
 		while (!anchored) {
-			piece_show(&board, piece, row, col);
-			graphics_update(&board);
-			
 			keycode_t input = input_pop();
 			
 			piece_hide(&board, piece, row, col);
@@ -64,14 +61,16 @@ int main(void)
 			}
 			
 			anchored = piece_anchor_check(&board, piece, row, col);
+			piece_show(&board, piece, row, col);
+			graphics_update(&board);
 			
 			int wait = droptime / INPUT_CHECK_FREQ;
 			time_passed += wait;
 			usleep(wait);
 		}
 		
-		piece_show(&board, piece, row, col);
 		board_linecheck(&board);
+		graphics_update(&board);
 		gameover = board_gameover(&board, piece, row, col);
 	}
 	

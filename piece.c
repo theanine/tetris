@@ -18,45 +18,66 @@
 
 piece_t piece_list[PIECE_COUNT] = {0};
 
+const char* piece_to_str(piece_name_t piece)
+{
+	switch (piece) {
+		case PIECE_STRAIGHT:   return "STRAIGHT";
+		case PIECE_SQUARE:     return "SQUARE";
+		case PIECE_T:          return "T";
+		case PIECE_L:          return "L";
+		case PIECE_L_REVERSE:  return "L_REVERSE";
+		case PIECE_S:          return "S";
+		case PIECE_S_REVERSE:  return "S_REVERSE";
+		default:               return "UNKNOWN";
+	}
+}
+
 void piece_init(void)
 {
 	// PIECE_STRAIGHT
+	piece_list[PIECE_STRAIGHT].name = PIECE_STRAIGHT;
 	piece_list[PIECE_STRAIGHT].cells[2][0] = 1;
 	piece_list[PIECE_STRAIGHT].cells[2][1] = 1;
 	piece_list[PIECE_STRAIGHT].cells[2][2] = 1;
 	piece_list[PIECE_STRAIGHT].cells[2][3] = 1;
 	
 	// PIECE_SQUARE
+	piece_list[PIECE_SQUARE].name = PIECE_SQUARE;
 	piece_list[PIECE_SQUARE].cells[1][1] = 1;
 	piece_list[PIECE_SQUARE].cells[1][2] = 1;
 	piece_list[PIECE_SQUARE].cells[2][1] = 1;
 	piece_list[PIECE_SQUARE].cells[2][2] = 1;
 	
 	// PIECE_T
+	piece_list[PIECE_T].name = PIECE_T;
+	piece_list[PIECE_T].cells[1][2] = 1;
 	piece_list[PIECE_T].cells[2][1] = 1;
 	piece_list[PIECE_T].cells[2][2] = 1;
 	piece_list[PIECE_T].cells[2][3] = 1;
-	piece_list[PIECE_T].cells[1][2] = 1;
 	
 	// PIECE_L
+	piece_list[PIECE_L].name = PIECE_L;
 	piece_list[PIECE_L].cells[0][1] = 1;
 	piece_list[PIECE_L].cells[1][1] = 1;
 	piece_list[PIECE_L].cells[2][1] = 1;
 	piece_list[PIECE_L].cells[2][2] = 1;
 	
 	// PIECE_L_REVERSE
+	piece_list[PIECE_L_REVERSE].name = PIECE_L_REVERSE;
 	piece_list[PIECE_L_REVERSE].cells[0][2] = 1;
 	piece_list[PIECE_L_REVERSE].cells[1][2] = 1;
 	piece_list[PIECE_L_REVERSE].cells[2][2] = 1;
 	piece_list[PIECE_L_REVERSE].cells[2][1] = 1;
 	
 	// PIECE_S
+	piece_list[PIECE_S].name = PIECE_S;
 	piece_list[PIECE_S].cells[1][2] = 1;
 	piece_list[PIECE_S].cells[1][3] = 1;
 	piece_list[PIECE_S].cells[2][1] = 1;
 	piece_list[PIECE_S].cells[2][2] = 1;
 	
 	// PIECE_S_REVERSE
+	piece_list[PIECE_S_REVERSE].name = PIECE_S_REVERSE;
 	piece_list[PIECE_S_REVERSE].cells[1][1] = 1;
 	piece_list[PIECE_S_REVERSE].cells[1][2] = 1;
 	piece_list[PIECE_S_REVERSE].cells[2][2] = 1;
@@ -151,7 +172,7 @@ bool piece_anchor_check(board_t* b, piece_t piece, int row, int col)
 		for (int x = 0; x < MAX_PIECE_WIDTH; x++) {
 			if (piece.cells[y][x]) {
 				if (piece_collision_check_bottom(b, y + row + 1, x + col)) {
-					TRACE("Detected a collision at [%d,%d] with [%d,%d]\n", y + row + 1, x + col, y, x);
+					TRACE("Detected a collision with [%d,%d] at [%d,%d]\n", y, x, y + row + 1, x + col);
 					return true;
 				}
 			}
