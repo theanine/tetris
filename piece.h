@@ -2,6 +2,7 @@
 #define __PIECE_H__
 
 #include <stdbool.h>
+#include "console.h"
 
 #define MAX_PIECE_HEIGHT  4
 #define MAX_PIECE_WIDTH   4
@@ -20,6 +21,7 @@ typedef enum piece_name {
 // piece_t represents the pieces
 typedef struct piece {
 	piece_name_t name;
+	color_t color;
 	int rotated_degrees;
 	bool cells[MAX_PIECE_HEIGHT][MAX_PIECE_WIDTH];
 } piece_t;

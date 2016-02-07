@@ -44,7 +44,7 @@ void board_shift(board_t* b, int start_row)
 {
 	for (int row = start_row; row >= 0; row--) {
 		for (int col = 0; col < b->width; col++) {
-			int val = (row < 1) ? 0 : board_get(b, row - 1, col);
+			color_t val = (row < 1) ? COLOR_NONE : board_get(b, row - 1, col);
 			board_set(b, row, col, val);
 		}
 	}
@@ -62,7 +62,7 @@ void board_linecheck(board_t* b)
 		
 		if (row_cleared) {
 			for (int col = 0; col < b->width; col++)
-				board_set(b, row, col, 0);
+				board_set(b, row, col, COLOR_NONE);
 			board_shift(b, row);
 			b->score++;
 		}
@@ -75,9 +75,9 @@ void board_init(board_t* b, int width, int height)
 	b->score  = INITIAL_SCORE;
 	b->width  = width;
 	b->height = height;
-	b->cells  = calloc(height, sizeof(int*));
+	b->cells  = calloc(height, sizeof(color_t*));
 	for (int row = 0; row < height; row++)
-		b->cells[row] = calloc(width, sizeof(int*));
+		b->cells[row] = calloc(width, sizeof(color_t));
 }
 
 void board_destroy(board_t* b)
@@ -87,15 +87,15 @@ void board_destroy(board_t* b)
 	free(b->cells);
 }
 
-void board_set(board_t* b, int row, int col, int val)
+void board_set(board_t* b, int row, int col, color_t color)
 {
 	TRACE("%s(%p, %d, %d, %d)\n", __func__, (void*)b, row, col, val);
 	if (row >= 0 && row < b->height)
 		if (col >= 0 && col < b->width)
-			b->cells[row][col] = val;
+			b->cells[row][col] = color;
 }
 
-int board_get(board_t* b, int row, int col)
+color_t board_get(board_t* b, int row, int col)
 {
 	TRACE("%s(%p, %d, %d)\n", __func__, (void*)b, row, col);
 	if (col < 0)

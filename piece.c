@@ -41,6 +41,7 @@ void piece_init(void)
 	piece_list[PIECE_STRAIGHT].cells[2][1] = 1;
 	piece_list[PIECE_STRAIGHT].cells[2][2] = 1;
 	piece_list[PIECE_STRAIGHT].cells[2][3] = 1;
+	piece_list[PIECE_STRAIGHT].color = COLOR_CYAN;
 	
 	// PIECE_SQUARE
 	piece_list[PIECE_SQUARE].name = PIECE_SQUARE;
@@ -49,6 +50,7 @@ void piece_init(void)
 	piece_list[PIECE_SQUARE].cells[1][2] = 1;
 	piece_list[PIECE_SQUARE].cells[2][1] = 1;
 	piece_list[PIECE_SQUARE].cells[2][2] = 1;
+	piece_list[PIECE_SQUARE].color = COLOR_YELLOW;
 	
 	// PIECE_T
 	piece_list[PIECE_T].name = PIECE_T;
@@ -57,6 +59,7 @@ void piece_init(void)
 	piece_list[PIECE_T].cells[2][1] = 1;
 	piece_list[PIECE_T].cells[2][2] = 1;
 	piece_list[PIECE_T].cells[2][3] = 1;
+	piece_list[PIECE_T].color = COLOR_MAGENTA;
 	
 	// PIECE_L
 	piece_list[PIECE_L].name = PIECE_L;
@@ -65,6 +68,7 @@ void piece_init(void)
 	piece_list[PIECE_L].cells[1][1] = 1;
 	piece_list[PIECE_L].cells[2][1] = 1;
 	piece_list[PIECE_L].cells[2][2] = 1;
+	piece_list[PIECE_L].color = COLOR_WHITE;
 	
 	// PIECE_L_REVERSE
 	piece_list[PIECE_L_REVERSE].name = PIECE_L_REVERSE;
@@ -73,6 +77,7 @@ void piece_init(void)
 	piece_list[PIECE_L_REVERSE].cells[1][2] = 1;
 	piece_list[PIECE_L_REVERSE].cells[2][2] = 1;
 	piece_list[PIECE_L_REVERSE].cells[2][1] = 1;
+	piece_list[PIECE_L_REVERSE].color = COLOR_BLUE;
 	
 	// PIECE_S
 	piece_list[PIECE_S].name = PIECE_S;
@@ -81,6 +86,7 @@ void piece_init(void)
 	piece_list[PIECE_S].cells[1][3] = 1;
 	piece_list[PIECE_S].cells[2][1] = 1;
 	piece_list[PIECE_S].cells[2][2] = 1;
+	piece_list[PIECE_S].color = COLOR_GREEN;
 	
 	// PIECE_S_REVERSE
 	piece_list[PIECE_S_REVERSE].name = PIECE_S_REVERSE;
@@ -89,6 +95,7 @@ void piece_init(void)
 	piece_list[PIECE_S_REVERSE].cells[1][2] = 1;
 	piece_list[PIECE_S_REVERSE].cells[2][2] = 1;
 	piece_list[PIECE_S_REVERSE].cells[2][3] = 1;
+	piece_list[PIECE_S_REVERSE].color = COLOR_RED;
 	
 	srand(time(NULL));
 }
@@ -136,10 +143,11 @@ bool piece_get_cell(piece_t* piece, int y, int x)
 
 void piece_visibility(board_t* board, piece_t piece, int row, int col, bool shown)
 {
+	color_t color = shown ? piece.color : COLOR_NONE;
 	for (int y = 0; y < MAX_PIECE_HEIGHT; y++)
 		for (int x = 0; x < MAX_PIECE_WIDTH; x++)
 			if (piece_get_cell(&piece, y, x))
-				board_set(board, y + row, x + col, shown);
+				board_set(board, y + row, x + col, color);
 }
 
 void piece_show(board_t* board, piece_t piece, int row, int col)
