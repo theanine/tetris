@@ -30,6 +30,7 @@ void board_levelup(board_t* b);
 void piece_show(board_t* b);
 void piece_hide(board_t* b);
 bool piece_anchor_check(board_t* b);
+int piece_get_collision(board_t* b, piece_t* p, int row, int col);
 bool piece_collision_check_top(board_t* b, int row, int col);
 bool piece_collision_check(board_t* b, piece_t* p, int row, int col);
 

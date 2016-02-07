@@ -41,6 +41,13 @@ void input_handle(board_t* b, keycode_t input)
 			break;
 		case KEY_UP:
 			piece_rotate(&new_piece);
+			int collision = piece_get_collision(b, &new_piece, new_row, new_col);
+			if (collision == ERR_OFF_LEFT)
+				new_col++;
+			if (collision == ERR_OFF_RIGHT)
+				new_col--;
+			if (collision == ERR_OFF_BOTTOM)
+				new_row--;
 			break;
 		case KEY_DOWN:
 			new_row++;

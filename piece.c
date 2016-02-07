@@ -110,6 +110,12 @@ piece_t piece_gen(void)
 
 bool piece_get_cell(piece_t* piece, int y, int x)
 {
+	if (y < 0 || y > MAX_PIECE_HEIGHT)
+		return false;
+	
+	if (x < 0 || x > MAX_PIECE_WIDTH)
+		return false;
+	
 	switch (piece->name) {
 		
 		// square doesn't need rotation
