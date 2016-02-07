@@ -10,7 +10,7 @@ LDIR=lib
 ODIR=obj
 BDIR=bin
 
-CFLAGS=-Werror -Wall -pedantic
+CFLAGS=-Werror -Wall -pedantic -g
 INCS=-I$(IDIR)
 LIBS=-lpthread
 
