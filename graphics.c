@@ -11,8 +11,9 @@
 #define TRACE(...)  do { } while (0)
 #endif
 
-#define PREVIEW_ROW_START  1
-#define PREVIEW_ROW_END    5
+#define PREVIEW_ROW_START     1
+#define PREVIEW_ROW_END       5
+#define BUFFERED_BOX_DRAWING  false
 
 void graphics_print_color(color_t color)
 {
@@ -31,46 +32,46 @@ void graphics_update(board_t* b)
 	
 	printf("Level: %d\n", b->level);
 	printf("Score: %d\n", b->score);
-	
-	printf("┌");
+
+	printf("%s", BUFFERED_BOX_DRAWING ? "┌" : " ");
 	for (int col = 0; col < b->width; col++)
-		printf("─");
-	printf("┐");
+		printf("%s", BUFFERED_BOX_DRAWING ? "─" : "▁");
+	printf("%s", BUFFERED_BOX_DRAWING ? "┐" : "");
 	
 	printf("\n");
 	for (int row = 0; row < b->height; row++) {
-		printf("│");
+		printf("%s", BUFFERED_BOX_DRAWING ? "│" : "▕");
 		for (int col = 0; col < b->width; col++) {
 			color_t color = board_get(b, row, col);
 			graphics_print_color(color);
 		}
-		printf("│");
+		printf("%s", BUFFERED_BOX_DRAWING ? "│" : "▏");
 		
 		if (row == PREVIEW_ROW_START - 1)
 			printf("  NEXT");
 		
 		if (row == PREVIEW_ROW_START)
-			printf(" ┌────┐");
+			printf("%s", BUFFERED_BOX_DRAWING ? " ┌────┐" : " ▁▁▁▁");
 		
 		if (row > PREVIEW_ROW_START && row < PREVIEW_ROW_END) {
-			printf(" │");
+			printf("%s", BUFFERED_BOX_DRAWING ? "│" : "▕");
 			for (int i=0; i<MAX_PIECE_WIDTH; i++) {
 				color_t color = board_get_next_piece(b, row - PREVIEW_ROW_START - 1, i);
 				graphics_print_color(color);
 			}
-			printf("│");
+			printf("%s", BUFFERED_BOX_DRAWING ? "│" : "▏");
 		}
 		
 		if (row == PREVIEW_ROW_END)
-			printf(" └────┘");
+			printf("%s", BUFFERED_BOX_DRAWING ? " └────┘" : " ▔▔▔▔");
 		
 		printf("\n");
 	}
 	
-	printf("└");
+	printf("%s", BUFFERED_BOX_DRAWING ? "└" : " ");
 	for (int col = 0; col < b->width; col++)
-		printf("─");
-	printf("┘");
+		printf("%s", BUFFERED_BOX_DRAWING ? "─" : "▔");
+	printf("%s", BUFFERED_BOX_DRAWING ? "┘" : "");
 	
 	printf("\n");
 }
