@@ -42,7 +42,7 @@ void console_destroy(console_t* c)
 
 void console_clear(void)
 {
-	write(STDOUT_FILENO, " \033[1;1H\033[2J", 12);
+	printf("\033[1;1H\033[2J\033[3J");
 }
 
 void console_setcolor(color_t color)

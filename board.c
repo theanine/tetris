@@ -145,10 +145,8 @@ void board_newpiece(board_t* b)
 	b->row        = start_row_pos;
 	b->col        = start_col_pos;
 	
-	if (b->piece_count == 0) {
-		printf("piece_count == 0\n");
+	if (b->piece_count == 0)
 		b->next_piece = piece_gen();
-	}
 	
 	b->piece      = b->next_piece;
 	b->next_piece = piece_gen();
