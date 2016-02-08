@@ -80,11 +80,13 @@ void board_linecheck(board_t* b)
 
 void board_init(board_t* b, int width, int height)
 {
-	b->level  = INITIAL_LEVEL;
-	b->score  = INITIAL_SCORE;
-	b->width  = width;
-	b->height = height;
-	b->cells  = calloc(height, sizeof(color_t*));
+	b->level       = INITIAL_LEVEL;
+	b->score       = INITIAL_SCORE;
+	b->width       = width;
+	b->height      = height;
+	b->piece_count = 0;
+	b->cells       = calloc(height, sizeof(color_t*));
+	
 	for (int row = 0; row < height; row++)
 		b->cells[row] = calloc(width, sizeof(color_t));
 }
@@ -117,6 +119,13 @@ color_t board_get(board_t* b, int row, int col)
 	return b->cells[row][col];
 }
 
+color_t board_get_next_piece(board_t* b, int row, int col)
+{
+	if (b->next_piece.cells[row][col])
+		return b->next_piece.color;
+	return COLOR_NONE;
+}
+
 // drop time is in microseconds
 int board_getdroptime(board_t* b)
 {
@@ -133,9 +142,16 @@ void board_newpiece(board_t* b)
 	int start_row_pos = 1 - MAX_PIECE_HEIGHT;
 	int start_col_pos = (b->width - MAX_PIECE_WIDTH) / 2;
 	
-	b->row   = start_row_pos;
-	b->col   = start_col_pos;
-	b->piece = piece_gen();
+	b->row        = start_row_pos;
+	b->col        = start_col_pos;
+	
+	if (b->piece_count == 0) {
+		printf("piece_count == 0\n");
+		b->next_piece = piece_gen();
+	}
+	
+	b->piece      = b->next_piece;
+	b->next_piece = piece_gen();
 	
 	b->piece_count++;
 	if (b->piece_count % DIFFICULTY_ACCELERATION == 0)

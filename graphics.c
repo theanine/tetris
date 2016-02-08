@@ -11,6 +11,20 @@
 #define TRACE(...)  do { } while (0)
 #endif
 
+#define PREVIEW_ROW_START  1
+#define PREVIEW_ROW_END    5
+
+void graphics_print_color(color_t color)
+{
+	if (color == COLOR_NONE) {
+		printf(" ");
+	} else {
+		console_setcolor(color);
+		printf("█");
+		console_setcolor(COLOR_NORMAL);
+	}
+}
+
 void graphics_update(board_t* b)
 {
 	console_clear();
@@ -28,17 +42,29 @@ void graphics_update(board_t* b)
 		printf("│");
 		for (int col = 0; col < b->width; col++) {
 			color_t color = board_get(b, row, col);
-			
-			if (color == COLOR_NONE) {
-				printf(" ");
-				continue;
-			}
-			
-			console_setcolor(color);
-			printf("█");
-			console_setcolor(COLOR_NORMAL);
+			graphics_print_color(color);
 		}
-		printf("│\n");
+		printf("│");
+		
+		if (row == PREVIEW_ROW_START - 1)
+			printf("  NEXT");
+		
+		if (row == PREVIEW_ROW_START)
+			printf(" ┌────┐");
+		
+		if (row > PREVIEW_ROW_START && row < PREVIEW_ROW_END) {
+			printf(" │");
+			for (int i=0; i<MAX_PIECE_WIDTH; i++) {
+				color_t color = board_get_next_piece(b, row - PREVIEW_ROW_START - 1, i);
+				graphics_print_color(color);
+			}
+			printf("│");
+		}
+		
+		if (row == PREVIEW_ROW_END)
+			printf(" └────┘");
+		
+		printf("\n");
 	}
 	
 	printf("└");

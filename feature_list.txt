@@ -15,10 +15,10 @@ X drop piece key
 X difficulty increases
 X pieces (7)
 
-- preview next piece
+X preview next piece
+X colored pieces
 - leaderboard (including name query)
 - leaderboard persistence
 - hold piece
 - title screen w/options
 - demo/ai mode
-- colored pieces

@@ -102,7 +102,6 @@ void piece_init(void)
 
 piece_t piece_gen(void)
 {
-	// return piece_list[PIECE_STRAIGHT];
 	piece_name_t name = rand() % PIECE_COUNT;
 	TRACE("generated a %d\n", name);
 	return piece_list[name];
