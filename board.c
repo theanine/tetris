@@ -78,6 +78,11 @@ void board_linecheck(board_t* b)
 		b->score += rows_cleared;
 }
 
+void board_get_score(board_t* b)
+{
+	return b->score;
+}
+
 void board_init(board_t* b, int width, int height)
 {
 	b->level       = INITIAL_LEVEL;

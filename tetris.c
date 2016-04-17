@@ -10,8 +10,20 @@
 #include "graphics.h"
 #include "timer.h"
 
-#define BOARD_WIDTH                10
-#define BOARD_HEIGHT               20
+#define BOARD_WIDTH      10
+#define BOARD_HEIGHT     20
+#define MAX_HIGH_SCORES  10
+
+int high_scores[MAX_HIGH_SCORES] = {0};
+
+void leaderboard(int score)
+{
+	FILE* score_file = fopen("leaderboard.txt", "ab+");
+	fread("")
+	int bytes = fwrite(buf, sizeof(char), sizeof(buf), score_file);
+	assert(bytes == sizeof(buf));
+	
+}
 
 int main(void)
 {
@@ -53,6 +65,9 @@ int main(void)
 	}
 	
 	printf("\n***** GAME OVER!! *****\n");
+	int score = board_get_score(&board);
+	
+	
 	board_destroy(&board);
 	console_destroy(&console);
 	return 0;
