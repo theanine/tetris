@@ -1,3 +1,4 @@
+MVP:
 X draw board
 X 1 piece
 X move left/right/down
@@ -8,17 +9,26 @@ X rotate left/right
 X line completion check
 X game over screen
 X keyboard thread
-X drop timer
+X 7 pieces
 
-X score
-X drop piece key
-X difficulty increases
-X pieces (7)
-
-X preview next piece
+Easy:
+X Scoring
+X Wall kick
+X Spacebar drops piece
+X Next piece preview
 X colored pieces
-- leaderboard (including name query)
-- leaderboard persistence
-- hold piece
-- title screen w/options
-- demo/ai mode
+X Better UI (colored pieces)
+
+Medium:
+X A piece drop timer
+X Levels with increasing speed
+- Leaderboard
+- Leaderboard persistence to disk
+- Piece stash ("hold piece")
+- Title screen w/options
+- Ghost piece
+
+Hard:
+- Demo mode (controlled by AI)
+- Multiplayer
+- Better UI (GUI)
