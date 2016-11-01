@@ -19,7 +19,7 @@ typedef enum keycode {
 void input_queue(keycode_t key);
 keycode_t input_pop(void);
 void* input_handler(void* unused);
-void input_handle(board_t* b, keycode_t input);
+bool input_handle(board_t* b, keycode_t input);
 int input_init(void);
 
 #endif /* __INPUT_H__ */

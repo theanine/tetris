@@ -37,16 +37,16 @@ int main(void)
 		board_newpiece(&board);
 		timer_resume();
 		
-		while (!timer_anchored()) {
+		bool anchored = false;
+		while (!anchored && !timer_anchored()) {
 			keycode_t input = input_pop();
 			
 			piece_hide(&board);
-			input_handle(&board, input);
+			anchored = input_handle(&board, input);
 			piece_show(&board);
 			
 			graphics_update(&board);
 		}
-		
 		board_linecheck(&board);
 		graphics_update(&board);
 		gameover = board_gameover(&board);

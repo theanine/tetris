@@ -30,7 +30,7 @@ bool board_gameover(board_t* b)
 {
 	for (int y = 0; y < MAX_PIECE_HEIGHT; y++) {
 		for (int x = 0; x < MAX_PIECE_WIDTH; x++) {
-			if (piece_get_cell(&b->piece, y, x)) {
+			if (piece_anchor_check(b) && piece_get_cell(&b->piece, y, x)) {
 				if (piece_collision_check_top(b, y + b->row, x + b->col)) {
 					TRACE("%s caused gameover with (%d,%d) at (%d,%d)\n", piece_to_str(b->piece.name), y, x, y + b->row, x + b->col);
 					TRACE("Piece was %sconsidered anchored.\n", piece_anchor_check(b) ? "" : "NOT ");

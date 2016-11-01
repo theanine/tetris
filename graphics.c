@@ -32,6 +32,7 @@ void graphics_update(board_t* b)
 	
 	printf("Level: %d\n", b->level);
 	printf("Score: %d\n", b->score);
+	printf("Pieces: %d\n", b->piece_count);
 
 	printf("%s", BUFFERED_BOX_DRAWING ? "┌" : " ");
 	for (int col = 0; col < b->width; col++)
